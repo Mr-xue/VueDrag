@@ -5,34 +5,41 @@
     <div id="drag-left">
       <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
         <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
-        <template v-for="item in list2">
-          <div>{{item.name}}</div>
-        </template>
+       
+        <!-- <transition-group type="transition" :name="'flip-list'" tag="div"> -->
+          <type-wrap :list='item' v-for="(item,index) in list2" :key="index"></type-wrap>
+        <!-- </transition-group> -->
       </draggable>
     </div>
     <!-- 左侧预览区域 end-->
-
+    
     <!-- 右侧浮窗 start-->
     <draggable id="drag-right" element="div" v-model="list" :options="rightOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false"> 
-      <transition-group type="transition" :name="'flip-list'" tag="ul">
-        <li v-for="item in list" :key="item.order">
-          <i class="iconfont icon-danxuan" v-if="item.type=='single'"></i>
-          <i class="iconfont icon-duoxuan" v-else-if="item.type=='multiple'"></i>
-          <span>{{item.name}}</span>
-        </li>
-      </transition-group>
+        <transition-group name="no" class="list-group" tag="ul">
+          <li v-for="item in list" :key="item.order">
+            <i class="iconfont icon-danxuan" v-if="item.type=='single'"></i>
+            <i class="iconfont icon-duoxuan" v-else-if="item.type=='multiple'"></i>
+            <span>{{item.name}}</span>
+          </li>
+        </transition-group>
     </draggable>
     <!-- 右侧浮窗 end-->
-
   </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
+// import sortable from 'sortablejs'
+import TypeWrap from './TypeWrap.vue'
+import singleItem from './single.vue'
+import multipleItem from './multiple.vue'
 export default {
   name: 'Drag',
   components: {
     draggable,
+    singleItem,
+    multipleItem,
+    TypeWrap
   },
   data () {
     return {
@@ -65,15 +72,18 @@ export default {
         animation: 0,
         group: {name:'right',pull:'clone',put:false},
         disabled: !this.editable,
-        ghostClass: 'ghost'
+        ghostClass: 'ghost',
+        sort:false,  //禁止排序
       };
     },
     leftOptions () {
-      return  {
+      return  { 
         animation: 0,
         group: 'right',
         disabled: !this.editable,
-        ghostClass: 'ghost'
+        ghostClass: 'ghost',
+        sort:true,
+        // handle: ".my-handle",
       };
     },
   },
@@ -156,11 +166,9 @@ ul {
   .flip-list-move {
     transition: transform 0.5s;
   }
-
-  /* .no-move {
+  .no-move {
     transition: transform 0s;
-  } */
-
+  } 
   .ghost {
     opacity: .5;
     background: #C8EBFB;
