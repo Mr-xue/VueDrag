@@ -3,12 +3,13 @@
     <h2>Vue Drag</h2>
     <!-- 左侧预览区域 start-->
     <div id="drag-left">
+       <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
       <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
-        <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
-       
-        <!-- <transition-group type="transition" :name="'flip-list'" tag="div"> -->
-          <type-wrap :list='item' v-for="(item,index) in list2" :key="index"></type-wrap>
-        <!-- </transition-group> -->
+        <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
+        <div v-for="(item,index) in list2" class="type" :key="index">
+            <type-wrap :list='item' :key="index"></type-wrap>
+        </div>
+        </transition-group>
       </draggable>
     </div>
     <!-- 左侧预览区域 end-->
@@ -46,6 +47,22 @@ export default {
       editable:true,  //拖动状态
       isDragging: false,  
       delayedDragging:false,
+      // 左、右侧浮窗拖动配置
+      rightOptions:{
+        animation: 0,
+        group: {name:'right',pull:'clone',put:false},
+        // disabled: !this.editable,
+        ghostClass: 'ghost',
+        sort:false,  //禁止排序
+      },
+      leftOptions:{
+          animation: 0,
+          group: 'right',
+          // disabled: !this.editable,
+          ghostClass: 'ghost',
+          sort:true,
+          // handle: ".my-handle",
+      },
       // 右侧浮窗
       list:[
         {
@@ -66,34 +83,15 @@ export default {
     }
   },
   computed:{
-    // 右侧浮窗拖动配置
-    rightOptions () {
-      return  {
-        animation: 0,
-        group: {name:'right',pull:'clone',put:false},
-        disabled: !this.editable,
-        ghostClass: 'ghost',
-        sort:false,  //禁止排序
-      };
-    },
-    leftOptions () {
-      return  { 
-        animation: 0,
-        group: 'right',
-        disabled: !this.editable,
-        ghostClass: 'ghost',
-        sort:true,
-        // handle: ".my-handle",
-      };
-    },
+    
   },
   methods:{
     onMove ({relatedContext, draggedContext}) {
-      /*const relatedElement = relatedContext.element;
+      const relatedElement = relatedContext.element;
       const draggedElement = draggedContext.element;
       console.log(relatedElement);
       console.log(draggedElement);
-      return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed*/
+      return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
     }
   },
   watch: {
@@ -123,14 +121,17 @@ ul {
   #drag-left{
     position: relative;
     width: 700px;
-    padding: 100px 0;
     .guide-img{
-      margin-top: 120px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform:translateX(-50%);
     }
     .drag-left-wrap{
       width: 100%;
+      height: 200px;
       li.sortable-chosen{
-        height: 200px;
+        min-height: 200px;
         border:2px dashed orange;
         list-style: none;
         & > *{display: none;}
@@ -173,6 +174,8 @@ ul {
     opacity: .5;
     background: #C8EBFB;
   }
-  
+  .list-group {
+    min-height: 20px;
+  }
 }
 </style>
