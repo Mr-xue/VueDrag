@@ -6,9 +6,11 @@
        <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
       <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
-        <div v-for="(item,index) in list2" class="type" :key="index">
-            <type-wrap :list='item' :key="index"></type-wrap>
-        </div>
+          <div class="list-group-item"  v-for="(item,index) in list2" :key="index">
+            <!-- <type-wrap :list-show='item'></type-wrap> -->
+            <single-item v-if="item.type=='single'"></single-item>
+            <multiple-item v-else-if="item.type=='multiple'"></multiple-item>
+          </div>
         </transition-group>
       </draggable>
     </div>
@@ -31,16 +33,17 @@
 <script>
 import draggable from 'vuedraggable'
 // import sortable from 'sortablejs'
-import TypeWrap from './TypeWrap.vue'
-import singleItem from './single.vue'
-import multipleItem from './multiple.vue'
+// import TypeWrap from './TypeWrap.vue'
+// import singleItem from './single.vue' 
+// import multipleItem from './multiple.vue'
 export default {
   name: 'Drag',
   components: {
     draggable,
-    singleItem,
-    multipleItem,
-    TypeWrap
+    TypeWrap     : ()=> import('./TypeWrap.vue'),
+    singleItem   : ()=> import('./single.vue'),
+    multipleItem : ()=> import('./multiple.vue')
+    // TypeWrap
   },
   data () {
     return {
@@ -58,7 +61,6 @@ export default {
       leftOptions:{
           animation: 0,
           group: 'right',
-          // disabled: !this.editable,
           ghostClass: 'ghost',
           sort:true,
           // handle: ".my-handle",
@@ -81,9 +83,6 @@ export default {
       // 左侧题目显示
       list2:[]
     }
-  },
-  computed:{
-    
   },
   methods:{
     onMove ({relatedContext, draggedContext}) {
@@ -126,6 +125,7 @@ ul {
       top: 0;
       left: 50%;
       transform:translateX(-50%);
+      pointer-events: none;
     }
     .drag-left-wrap{
       width: 100%;
@@ -177,5 +177,9 @@ ul {
   .list-group {
     min-height: 20px;
   }
+  .list-group-item{
+    transition: all 1s;
+  }
 }
+
 </style>

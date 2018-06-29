@@ -1,7 +1,7 @@
 <template>
   <div class="type-wrap">
-    <single-item v-if="list.type=='single'"></single-item>
-    <multiple-item v-else-if="list.type=='multiple'"></multiple-item>
+    <single-item v-if="listShow.type=='single'"></single-item>
+    <multiple-item v-else-if="listShow.type=='multiple'"></multiple-item>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ import multipleItem from './multiple.vue'
 export default {
   name: 'Drag',
   props:{
-    list:Object,
+    listShow:Object,
   },
   data () {
     return {
