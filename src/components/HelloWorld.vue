@@ -4,7 +4,7 @@
     <!-- 左侧预览区域 start-->
     <div id="drag-left">
       <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
-        <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
+        <!-- <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0"> -->
         <template v-for="item in list2">
           <div>{{item.name}}</div>
         </template>
@@ -23,16 +23,21 @@
       </transition-group>
     </draggable>
     <!-- 右侧浮窗 end-->
+  <singleChoice></singleChoice>
 
   </div>
+
+
 </template>
 
 <script>
 import draggable from 'vuedraggable'
+import singleChoice from './Questions/QuestionSingleChoice'
 export default {
   name: 'Drag',
   components: {
     draggable,
+    singleChoice,
   },
   data () {
     return {
