@@ -3,47 +3,68 @@
     <h2>Vue Drag</h2>
     <!-- 左侧预览区域 start-->
     <div id="drag-left">
+       <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
       <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
-        <!-- <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0"> -->
-        <template v-for="item in list2">
-          <div>{{item.name}}</div>
-        </template>
+        <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
+          <div class="list-group-item"  v-for="(item,index) in list2" :key="index">
+            <!-- <type-wrap :list-show='item'></type-wrap> -->
+            <single-item v-if="item.type=='single'"></single-item>
+            <multiple-item v-else-if="item.type=='multiple'"></multiple-item>
+          </div>
+        </transition-group>
       </draggable>
     </div>
     <!-- 左侧预览区域 end-->
-
+    
     <!-- 右侧浮窗 start-->
     <draggable id="drag-right" element="div" v-model="list" :options="rightOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false"> 
-      <transition-group type="transition" :name="'flip-list'" tag="ul">
-        <li v-for="item in list" :key="item.order">
-          <i class="iconfont icon-danxuan" v-if="item.type=='single'"></i>
-          <i class="iconfont icon-duoxuan" v-else-if="item.type=='multiple'"></i>
-          <span>{{item.name}}</span>
-        </li>
-      </transition-group>
+        <transition-group name="no" class="list-group" tag="ul">
+          <li v-for="item in list" :key="item.order">
+            <i class="iconfont icon-danxuan" v-if="item.type=='single'"></i>
+            <i class="iconfont icon-duoxuan" v-else-if="item.type=='multiple'"></i>
+            <span>{{item.name}}</span>
+          </li>
+        </transition-group>
     </draggable>
     <!-- 右侧浮窗 end-->
-  <singleChoice></singleChoice>
-
   </div>
-
-
 </template>
 
 <script>
 import draggable from 'vuedraggable'
-import singleChoice from './Questions/QuestionSingleChoice'
+// import sortable from 'sortablejs'
+// import TypeWrap from './TypeWrap.vue'
+// import singleItem from './single.vue' 
+// import multipleItem from './multiple.vue'
 export default {
   name: 'Drag',
   components: {
     draggable,
-    singleChoice,
+    TypeWrap     : ()=> import('./TypeWrap.vue'),
+    singleItem   : ()=> import('./single.vue'),
+    multipleItem : ()=> import('./multiple.vue')
+    // TypeWrap
   },
   data () {
     return {
       editable:true,  //拖动状态
       isDragging: false,  
       delayedDragging:false,
+      // 左、右侧浮窗拖动配置
+      rightOptions:{
+        animation: 0,
+        group: {name:'right',pull:'clone',put:false},
+        // disabled: !this.editable,
+        ghostClass: 'ghost',
+        sort:false,  //禁止排序
+      },
+      leftOptions:{
+          animation: 0,
+          group: 'right',
+          ghostClass: 'ghost',
+          sort:true,
+          // handle: ".my-handle",
+      },
       // 右侧浮窗
       list:[
         {
@@ -63,32 +84,13 @@ export default {
       list2:[]
     }
   },
-  computed:{
-    // 右侧浮窗拖动配置
-    rightOptions () {
-      return  {
-        animation: 0,
-        group: {name:'right',pull:'clone',put:false},
-        disabled: !this.editable,
-        ghostClass: 'ghost'
-      };
-    },
-    leftOptions () {
-      return  {
-        animation: 0,
-        group: 'right',
-        disabled: !this.editable,
-        ghostClass: 'ghost'
-      };
-    },
-  },
   methods:{
     onMove ({relatedContext, draggedContext}) {
-      /*const relatedElement = relatedContext.element;
+      const relatedElement = relatedContext.element;
       const draggedElement = draggedContext.element;
       console.log(relatedElement);
       console.log(draggedElement);
-      return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed*/
+      return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
     }
   },
   watch: {
@@ -118,14 +120,18 @@ ul {
   #drag-left{
     position: relative;
     width: 700px;
-    padding: 100px 0;
     .guide-img{
-      margin-top: 120px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform:translateX(-50%);
+      pointer-events: none;
     }
     .drag-left-wrap{
       width: 100%;
+      height: 200px;
       li.sortable-chosen{
-        height: 200px;
+        min-height: 200px;
         border:2px dashed orange;
         list-style: none;
         & > *{display: none;}
@@ -161,15 +167,19 @@ ul {
   .flip-list-move {
     transition: transform 0.5s;
   }
-
-  /* .no-move {
+  .no-move {
     transition: transform 0s;
-  } */
-
+  } 
   .ghost {
     opacity: .5;
     background: #C8EBFB;
   }
-  
+  .list-group {
+    min-height: 20px;
+  }
+  .list-group-item{
+    transition: all 1s;
+  }
 }
+
 </style>
