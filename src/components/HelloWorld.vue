@@ -7,11 +7,8 @@
       <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
           <div class="list-group-item"  v-for="(item,index) in list2" :key="index">
-
-            <QuestionSingleChoice v-if="item.type=='single'"></QuestionSingleChoice>
-            <QuestionChoice v-else-if="item.type=='multiple'"></QuestionChoice>
-            <!-- <single-item v-if="item.type=='single'"></single-item>
-            <multiple-item v-else-if="item.type=='multiple'"></multiple-item> -->
+            <Single v-if="item.type=='single'"></Single>
+            <Multiple v-else-if="item.type=='multiple'"></Multiple>
           </div>
         </transition-group>
       </draggable>
@@ -29,6 +26,11 @@
         </transition-group>
     </draggable>
     <!-- 右侧浮窗 end-->
+
+    <Essay></Essay>
+    <Star></Star>
+    <Sex></Sex>
+    <Username></Username>
   </div>
 </template>
 
@@ -42,8 +44,12 @@ export default {
     // TypeWrap             : ()=> import('./TypeWrap.vue'),
     // singleItem           : ()=> import('./single.vue'),
     // multipleItem         : ()=> import('./multiple.vue'),
-    QuestionSingleChoice : ()=> import('./Questions/QuestionSingleChoice.vue'),
-    QuestionChoice       : ()=> import('./Questions/QuestionChoice.vue')
+    Single   : ()=> import('./Questions/Single.vue'),
+    Multiple : ()=> import('./Questions/Multiple.vue'),
+    Essay    : ()=> import('./Questions/Essay.vue'),
+    Star     : ()=> import('./Questions/Star.vue'),
+    Sex      : ()=> import('./Questions/Sex.vue'),  
+    Username : ()=> import('./Questions/Username.vue'),  // 姓名 邮箱 手机
   },
   data () {
     return {
@@ -109,6 +115,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
+@import './less/questions.less';
+
 *{margin: 0;padding: 0;}
 
 ul {

@@ -1,170 +1,10 @@
-<template>
-    <div class="single_choice question">
-        <!-- 默认展示模块 start -->
-        <div class="show_question" v-if="!isEdit" @click="isEdit = !isEdit">
-            <div class="question_header">
-                <i v-if="singleChoice.required">*</i>
-                <span class="title">{{ singleChoice.title }}</span>
-            </div>
-            <ul class="choice">
-                <li v-for="(item,index) in singleChoice.choice">
-                    <div class="normal" v-if="item.type=='normal'" @click="changeChoice(index,item.id)">
-                        <i class="iconfont icon-yuanquanweixuanfuben" v-if="answer[0]!=index"></i>
-                        <i class="iconfont icon-danxuan" v-else></i>
-                        <span class="cho" v-html="item.title"></span>
-                    </div>
-                    <div class="other" v-else-if="item.type=='other'">
-                        <i class="iconfont icon-fangxingweixuanzhong"></i>
-                        <span>其他</span>
-                        <input type="text" class="other_input" >
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <!-- 默认展示模块 end -->
-        
-        <!-- 编辑时展示 start-->
-        <div class="edit_question" v-else>
-            <div class="question_header">
-                <i v-if="singleChoice.required">*</i>
-                <input type="text" placeholder="请输入单选题目" class="title" v-model="singleChoice.title">
-            </div>
-            <ul class="choice">
-                <draggable
-                v-model="singleChoice.choice" 
-                :options="dragOptions" 
-                @start="drag=true" 
-                @end="drag=false">
-                    <li v-for="(item,index) in singleChoice.choice">
-                        <div v-if="item.type=='normal'" class="normal" >
-                            <i class="iconfont icon-move is_edit dragi"></i>
-                            <i class="iconfont icon-yuanquanweixuanfuben"></i>
-                            <input type="text" placeholder="请输入选项" class="cho" v-model="item.title" @click="inputSelect($event)">
-                            <i class="iconfont icon-cuo1 is_edit" 
-                            @click="removeChoice(index)" >
-                                <div class="remove">移除<i class="triangle"></i></div>
-                            </i>
-                        </div>
-                        <div class="other" v-else-if="item.type=='other'">
-                            <i class="iconfont icon-fangxingweixuanzhong"></i>
-                            <span>其他</span>
-                            <!-- <input type="text" class="other_input" > -->
-                            <div class="other_input"></div>
-                            <i class="iconfont icon-cuo1 is_edit" 
-                            @click="removeChoice(index)" >
-                                <div class="remove">移除<i class="triangle"></i></div>
-                            </i>
-                        </div>
-                    </li>
-                </draggable>
-            </ul>
-            <div class="bottom">
-                <div class="left">
-                    <span class="addCho" @click="addChoice()">添加选项</span>
-                    <span :class="singleChoice.choice[singleChoice.choice.length-1].type=='other'? 'addOther active':'addOther'" @click="addOther">添加其他</span>
-                </div>
-                <div class="right">
-                   <div class="elective" @click="singleChoice.required = !singleChoice.required">
-                        <i class="iconfont icon-fangxingweixuanzhong" v-if="singleChoice.required"></i>
-                        <i class="iconfont icon-fangxingxuanzhongfill" v-else></i>
-                        <span>选填</span>
-                    </div>
-                   <i class="iconfont icon-shanchu"></i>
-                   <!-- <i class="iconfont icon-msnui-copy-file"></i> -->
-                   <i class="iconfont icon-move"></i>
-                </div>
-            </div>
-        </div>
-        <!-- 编辑时展示 end-->
-    </div>
-</template>
-<script>
-import draggable from 'vuedraggable'
-export default {
-    name: 'QuestionSingleChoice',
-    components: {
-        draggable,
-    },
-    data () {
-        return {
-            singleChoice:
-            {
-                id       :1,        //题目标识
-                title    :'单选',
-                type     :'single', //题目类型
-                sort     :1,        //题目排序
-                required :false,   //此题是否必填
-                choice:[
-                    {
-                        title: "AAAAAAAAAAAAAA",
-                        type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
-                    },
-                    {
-                        title: "BBBBBBBBBB",
-                        type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
-                    },
-                    {
-                        title: "",
-                        type:"other" 
-                    }
-                ]
-            },
-            answer : [], //记录答案
-            isEdit : false, //是否在编辑状态
-            dragOptions:{
-                animation:150,
-                group:'question',
-                handle:'.dragi'
-            }
-        }
-    },
-    computed:{
-
-    },
-    methods:{
-        // 输入框点击选中文字
-        inputSelect (e){
-            (e.target).select()
-        },
-        addChoice (){
-            let len = this.singleChoice.choice.length;
-            let newCho = {
-                type:'normal',
-                title: "选项"+len, 
-            }
-            if(this.singleChoice.choice[len-1].type!='other'){
-                this.singleChoice.choice.push(newCho);
-            }else{
-                this.singleChoice.choice.splice(len-1,0,newCho)
-            }
-        },
-        removeChoice (e){
-            this.singleChoice.choice.splice(e,1)
-        },
-        addOther (){
-            let len = this.singleChoice.choice.length;
-            if(this.singleChoice.choice[len-1].type!='other'){
-                let newCho = {
-                    type:'other',
-                    title: "", 
-                }
-                this.singleChoice.choice.push(newCho);
-            }
-        },
-        changeChoice(index,id){
-            let ans = [];
-            ans.push(index);
-            this.answer = ans;
-            // this.$emit('answerVal', [this.answer, id, index]);
-        },
-    },
-    mounted() {},
-}
-</script>
-<style lang="less">
 .question{
     width:700px;
     margin:0 auto;
+    background:#fcfcfc;
+    overflow:hidden;
+    margin-bottom:20px;  
+
     input{
         outline: none;
     }
@@ -173,8 +13,7 @@ export default {
         width:100%;
         box-sizing:border-box;
         text-align: left;
-        padding:16px 33px 7px 0; 
-        margin-bottom:20px;  
+        padding:16px 33px 27px 0; 
         .question_header{
             font-weight:600;
             font-size:14px;
@@ -201,6 +40,7 @@ export default {
                 padding:0 10px;
             }
         }
+        /*单选和多选*/
         ul.choice{
             li{
                 cursor:pointer;
@@ -233,6 +73,7 @@ export default {
                         /*background:#f99;*/
                     }
                     .cho{
+                        display:inline-block;
                         width:300px !important;
                         margin-left:10px;
                         display:block;
@@ -294,6 +135,7 @@ export default {
                 } 
             }
         }
+        /*其他*/
         .other{
             height:38px;
             padding:6px 0;
@@ -352,9 +194,73 @@ export default {
                 }  
             }
         }
+        /*简答题*/
+        .input-box{
+            height:122px;
+            border:1px solid #999;
+            display:block;
+            margin-left:33px;
+            margin-bottom:15px;
+            .essay-input{
+                width:100%;
+                height:100%;
+                border:none;
+                resize:none;
+            }
+        }
+        /*评星*/
+        .star-box{
+           width:100%;
+           height:45px;
+           padding-left:32px;
+           box-sizing:border-box;
+           padding-left:33px;
+            div.single-star{
+                width:25px;
+                height:45px;
+                line-height:45px;
+                text-align: center;
+                color:#999;
+                display:inline-block;
+                font-size:28px;
+            }
+        }
+        /*姓名*/
+        .user-name-box{
+            height:38px;
+            margin:10px  0;
+            position:relative;
+            border:1px solid #f0f0f0;
+            width:257px;
+            margin-left:33px;
+            i.iconfont{
+                position:absolute;
+                width:40px;   
+                height:38px;
+                text-align: center;  
+                font-size:16px;
+                top:0;left:0; 
+                color:#333; 
+                line-height:38px;         
+            }
+            input{
+                display:block;
+                box-sizing:border-box;
+                width:100%;
+                height:38px;
+                padding-left:50px;
+            }
+            i.icon-shouji{
+                font-size:18px;
+            }
+            i.icon-youxiang{
+                font-size:18px;
+            }
+        }
+        /*底部*/
         .bottom{
             width:100%;
-            height:50px;
+            /*height:50px;*/
             padding-left:33px;
             box-sizing:border-box;
             margin-top:10px;
@@ -412,7 +318,6 @@ export default {
         text-align: left;
         box-sizing: border-box;
         padding:16px 33px 7px 0;   
-        margin-bottom:20px;
         .question_header{
              border:none;
         }
@@ -429,11 +334,14 @@ export default {
         background:#ecf5ff;
     }
     .edit_question{
-        min-height:200px;
+        min-height:164px;
         background:#fff;
         border:2px solid #159af1;
-        .question_header{
+        .question_header:hover{
             border-bottom:1px solid #f0f0f0;
+        }
+        .input-box{
+            border:1px solid #f0f0f0;
         }
         ul.choice{
             .cho:hover{
@@ -442,4 +350,3 @@ export default {
         }
     }
 }
-</style>
