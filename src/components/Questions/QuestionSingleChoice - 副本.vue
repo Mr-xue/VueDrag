@@ -3,11 +3,11 @@
         <!-- 默认展示模块 start -->
         <div class="show_question" v-if="!isEdit" @click="isEdit = !isEdit">
             <div class="question_header">
-                <i v-if="required">*</i>
-                <span class="title">{{ title }}</span>
+                <i v-if="singleChoice.required">*</i>
+                <span class="title">{{ singleChoice.title }}</span>
             </div>
             <ul class="choice">
-                <li v-for="(item,index) in choice">
+                <li v-for="(item,index) in singleChoice.choice">
                     <div class="normal" v-if="item.type=='normal'" @click="changeChoice(index,item.id)">
                         <i class="iconfont icon-yuanquanweixuanfuben" v-if="answer[0]!=index"></i>
                         <i class="iconfont icon-danxuan" v-else></i>
@@ -26,16 +26,16 @@
         <!-- 编辑时展示 start-->
         <div class="edit_question" v-else>
             <div class="question_header">
-                <i v-if="required">*</i>
-                <input type="text" placeholder="请输入单选题目" class="title" v-model="title2">
+                <i v-if="singleChoice.required">*</i>
+                <input type="text" placeholder="请输入单选题目" class="title" v-model="singleChoice.title">
             </div>
             <ul class="choice">
                 <draggable
-                v-model="choice" 
+                v-model="singleChoice.choice" 
                 :options="dragOptions" 
                 @start="drag=true" 
                 @end="drag=false">
-                    <li v-for="(item,index) in choice">
+                    <li v-for="(item,index) in singleChoice.choice">
                         <div v-if="item.type=='normal'" class="normal" >
                             <i class="iconfont icon-move is_edit dragi"></i>
                             <i class="iconfont icon-yuanquanweixuanfuben"></i>
@@ -61,11 +61,11 @@
             <div class="bottom">
                 <div class="left">
                     <span class="addCho" @click="addChoice()">添加选项</span>
-                    <span :class="choice[choice.length-1].type=='other'? 'addOther active':'addOther'" @click="addOther">添加其他</span>
+                    <span :class="singleChoice.choice[singleChoice.choice.length-1].type=='other'? 'addOther active':'addOther'" @click="addOther">添加其他</span>
                 </div>
                 <div class="right">
-                   <div class="elective" @click="required = !required">
-                        <i class="iconfont icon-fangxingweixuanzhong" v-if="required"></i>
+                   <div class="elective" @click="singleChoice.required = !singleChoice.required">
+                        <i class="iconfont icon-fangxingweixuanzhong" v-if="singleChoice.required"></i>
                         <i class="iconfont icon-fangxingxuanzhongfill" v-else></i>
                         <span>选填</span>
                     </div>
@@ -85,21 +85,8 @@ export default {
     components: {
         draggable,
     },
-    props:{
-        /*questionData:{
-            type:Object,
-            required: true,
-        }*/
-        title    :{type:String},
-        type     :{type:String},
-        required :{type:Boolean},
-        isEdit   :{type:Boolean},
-        choice   :{type:Array}
-
-    },
     data () {
         return {
-            title2:this.title,
             singleChoice:
             {
                 id       :1,        //题目标识
@@ -122,6 +109,8 @@ export default {
                     }
                 ]
             },
+            // isEdit : false, //是否在编辑状态
+            answer : [], //记录答案
             dragOptions:{
                 animation:150,
                 group:'question',
@@ -129,12 +118,8 @@ export default {
             }
         }
     },
-    watch:{
-        // 更新题目标题
-        title2 (newv,oldv){
-            console.log(newv+'--'+oldv);
-            this.$emit('update:title', newv)
-        }
+    computed:{
+
     },
     methods:{
         // 输入框点击选中文字
@@ -142,28 +127,28 @@ export default {
             (e.target).select()
         },
         addChoice (){
-            let len = this.choice.length;
+            let len = this.singleChoice.choice.length;
             let newCho = {
                 type:'normal',
                 title: "选项"+len, 
             }
-            if(this.choice[len-1].type!='other'){
-                this.choice.push(newCho);
+            if(this.singleChoice.choice[len-1].type!='other'){
+                this.singleChoice.choice.push(newCho);
             }else{
-                this.choice.splice(len-1,0,newCho)
+                this.singleChoice.choice.splice(len-1,0,newCho)
             }
         },
         removeChoice (e){
-            this.choice.splice(e,1)
+            this.singleChoice.choice.splice(e,1)
         },
         addOther (){
-            let len = this.choice.length;
-            if(this.choice[len-1].type!='other'){
+            let len = this.singleChoice.choice.length;
+            if(this.singleChoice.choice[len-1].type!='other'){
                 let newCho = {
                     type:'other',
                     title: "", 
                 }
-                this.choice.push(newCho);
+                this.singleChoice.choice.push(newCho);
             }
         },
         changeChoice(index,id){
