@@ -4,7 +4,7 @@
             <div class="question_header">
                 <i>*</i>
                 <!-- <span class="seq">Q1:</span>  -->
-                <span class="title">标题</span>
+                <span class="title">多选</span>
             </div>
             <ul class="choice">
                 <li>

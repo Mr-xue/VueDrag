@@ -7,9 +7,11 @@
       <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
           <div class="list-group-item"  v-for="(item,index) in list2" :key="index">
-            <!-- <type-wrap :list-show='item'></type-wrap> -->
-            <single-item v-if="item.type=='single'"></single-item>
-            <multiple-item v-else-if="item.type=='multiple'"></multiple-item>
+
+            <QuestionSingleChoice v-if="item.type=='single'"></QuestionSingleChoice>
+            <QuestionChoice v-else-if="item.type=='multiple'"></QuestionChoice>
+            <!-- <single-item v-if="item.type=='single'"></single-item>
+            <multiple-item v-else-if="item.type=='multiple'"></multiple-item> -->
           </div>
         </transition-group>
       </draggable>
@@ -40,9 +42,11 @@ export default {
   name: 'Drag',
   components: {
     draggable,
-    TypeWrap     : ()=> import('./TypeWrap.vue'),
-    singleItem   : ()=> import('./single.vue'),
-    multipleItem : ()=> import('./multiple.vue')
+    TypeWrap             : ()=> import('./TypeWrap.vue'),
+    singleItem           : ()=> import('./single.vue'),
+    multipleItem         : ()=> import('./multiple.vue'),
+    QuestionSingleChoice : ()=> import('./Questions/QuestionSingleChoice.vue'),
+    QuestionChoice       : ()=> import('./Questions/QuestionChoice.vue')
     // TypeWrap
   },
   data () {
@@ -63,7 +67,7 @@ export default {
           group: 'right',
           ghostClass: 'ghost',
           sort:true,
-          // handle: ".my-handle",
+          handle: ".icon-move",
       },
       // 右侧浮窗
       list:[
@@ -129,13 +133,16 @@ ul {
     }
     .drag-left-wrap{
       width: 100%;
-      height: 200px;
-      li.sortable-chosen{
-        min-height: 200px;
-        border:2px dashed orange;
-        list-style: none;
-        & > *{display: none;}
+      min-height: 167px;
+      .list-group{
+        >li.sortable-chosen{
+          min-height: 167px;
+          border:2px dashed orange;
+          list-style: none;
+          & > *{display: none;}
+        }
       }
+      
     }
 
     /*test code*/

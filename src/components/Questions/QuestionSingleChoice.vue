@@ -1,9 +1,10 @@
 <template>
     <div class="single_choice question">
+        <!-- 默认展示模块 start -->
         <div class="show_question" v-if="!isEdit" @click="isEdit = !isEdit">
             <div class="question_header">
                 <i v-if="singleChoice.required">*</i>
-                <span class="title" v-html="singleChoice.title"></span>
+                <span class="title">{{ singleChoice.title }}</span>
             </div>
             <ul class="choice">
                 <li v-for="(item,index) in singleChoice.choice">
@@ -20,6 +21,9 @@
                 </li>
             </ul>
         </div>
+        <!-- 默认展示模块 end -->
+        
+        <!-- 编辑时展示 start-->
         <div class="edit_question" v-else>
             <div class="question_header">
                 <i v-if="singleChoice.required">*</i>
@@ -28,14 +32,14 @@
             <ul class="choice">
                 <draggable
                 v-model="singleChoice.choice" 
-                :options="{animation:300,group:'people'}" 
+                :options="dragOptions" 
                 @start="drag=true" 
                 @end="drag=false">
                     <li v-for="(item,index) in singleChoice.choice">
                         <div v-if="item.type=='normal'" class="normal" >
-                            <i class="iconfont icon-move is_edit "></i>
+                            <i class="iconfont icon-move is_edit dragi"></i>
                             <i class="iconfont icon-yuanquanweixuanfuben"></i>
-                            <input type="text" placeholder="请输入选项" class="cho" v-model="item.title">
+                            <input type="text" placeholder="请输入选项" class="cho" v-model="item.title" @click="inputSelect($event)">
                             <i class="iconfont icon-cuo1 is_edit" 
                             @click="removeChoice(index)" >
                                 <div class="remove">移除<i class="triangle"></i></div>
@@ -71,6 +75,7 @@
                 </div>
             </div>
         </div>
+        <!-- 编辑时展示 end-->
     </div>
 </template>
 <script>
@@ -85,7 +90,7 @@ export default {
             singleChoice:
             {
                 id       :1,        //题目标识
-                title    :'题目名称',
+                title    :'单选',
                 type     :'single', //题目类型
                 sort     :1,        //题目排序
                 required :false,   //此题是否必填
@@ -106,12 +111,21 @@ export default {
             },
             answer : [], //记录答案
             isEdit : false, //是否在编辑状态
+            dragOptions:{
+                animation:150,
+                group:'question',
+                handle:'.dragi'
+            }
         }
     },
     computed:{
 
     },
     methods:{
+        // 输入框点击选中文字
+        inputSelect (e){
+            (e.target).select()
+        },
         addChoice (){
             let len = this.singleChoice.choice.length;
             let newCho = {
