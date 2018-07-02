@@ -8,10 +8,10 @@
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
           <div class="list-group-item"  v-for="(item,index) in list2" :key="index">
           <code>
-            {{item}}
+            <!-- {{item}} -->
           </code>
-            <QuestionSingleChoice v-if="item.type=='single'" v-bind.sync="item"></QuestionSingleChoice>
-            <QuestionChoice v-else-if="item.type=='multiple'" :question-data="item"></QuestionChoice>
+            <Single v-if="item.type=='single'" v-bind.sync="item"></Single>
+            <Multiple v-else-if="item.type=='multiple'" :question-data="item"></Multiple>
             <!-- <single-item v-if="item.type=='single'"></single-item>
             <multiple-item v-else-if="item.type=='multiple'"></multiple-item> -->
           </div>
@@ -44,8 +44,8 @@ export default {
     // TypeWrap             : ()=> import('./TypeWrap.vue'),
     // singleItem           : ()=> import('./single.vue'),
     // multipleItem         : ()=> import('./multiple.vue'),
-    QuestionSingleChoice : ()=> import('./Questions/QuestionSingleChoice.vue'),
-    QuestionChoice       : ()=> import('./Questions/QuestionChoice.vue')
+    Single : ()=> import('./Questions/Single.vue'),
+    Multiple       : ()=> import('./Questions/Multiple.vue')
   },
   data () {
     return {
@@ -143,6 +143,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
+@import './less/questions.less';
+
 *{margin: 0;padding: 0;}
 
 ul {
