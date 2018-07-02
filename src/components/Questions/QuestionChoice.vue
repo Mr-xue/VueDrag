@@ -142,7 +142,7 @@ export default {
     .show_question{
         width:100%;
         min-height:130px;
-        background:#ecf5ff;
+        /*background:#ecf5ff;*/
         text-align: left;
         box-sizing: border-box;
         padding:16px 33px 7px;   

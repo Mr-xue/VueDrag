@@ -34,20 +34,16 @@
 
 <script>
 import draggable from 'vuedraggable'
-// import sortable from 'sortablejs'
-// import TypeWrap from './TypeWrap.vue'
-// import singleItem from './single.vue' 
-// import multipleItem from './multiple.vue'
+
 export default {
   name: 'Drag',
   components: {
     draggable,
-    TypeWrap             : ()=> import('./TypeWrap.vue'),
-    singleItem           : ()=> import('./single.vue'),
-    multipleItem         : ()=> import('./multiple.vue'),
+    // TypeWrap             : ()=> import('./TypeWrap.vue'),
+    // singleItem           : ()=> import('./single.vue'),
+    // multipleItem         : ()=> import('./multiple.vue'),
     QuestionSingleChoice : ()=> import('./Questions/QuestionSingleChoice.vue'),
     QuestionChoice       : ()=> import('./Questions/QuestionChoice.vue')
-    // TypeWrap
   },
   data () {
     return {
