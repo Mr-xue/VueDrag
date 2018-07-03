@@ -1,35 +1,37 @@
 <template>
     <div class="essay question">
         <!-- 默认展示模块 start -->
-        <div class="show_question" v-if="!isEdit" @click="isEdit = !isEdit">
+        <div class="show_question" v-if="!isEdit">
             <div class="question_header">
-                <i v-if="essay.required">*</i>
-                <span class="title">{{ essay.title }}</span>
+                <i v-if="required">*</i>
+                <span class="title">{{ title }}</span>
             </div>
             <div class="input-box">
                 <textarea class="essay-input"></textarea>
             </div>
-            
         </div>
         <!-- 默认展示模块 end -->
-        
         <!-- 编辑时展示 start-->
         <div class="edit_question" v-else>
             <div class="question_header">
-                <i v-if="essay.required">*</i>
-                <input type="text" placeholder="请输入单选题目" class="title" v-model="essay.title">
+                <i v-if="required">*</i>
+                <input type="text" placeholder="请输入简答题目" :class="isEmpty ? 'title input-title title-empty':'title input-title'"  v-model="title2">
+                <div class="empty-msg" v-if="isEmpty">请输入题目<i class="triangle"></i></div>
             </div>
            <div class="input-box"></div>
             <div class="bottom">
                 <div class="right">
-                   <div class="elective" @click="essay.required = !essay.required">
-                        <i class="iconfont icon-fangxingweixuanzhong" v-if="essay.required"></i>
+                   <div class="elective" @click="required2 = !required2">
+                        <i class="iconfont icon-fangxingweixuanzhong" v-if="required"></i>
                         <i class="iconfont icon-fangxingxuanzhongfill" v-else></i>
                         <span>选填</span>
                     </div>
-                   <i class="iconfont icon-shanchu"></i>
-                   <!-- <i class="iconfont icon-msnui-copy-file"></i> -->
-                   <i class="iconfont icon-move"></i>
+                   <i class="iconfont icon-shanchu">
+                       <div class="remove hover-btn">移除<i class="triangle"></i></div>
+                   </i>
+                   <i class="iconfont icon-move">
+                       <div class="remove hover-btn">排序<i class="triangle"></i></div>
+                   </i>
                 </div>
             </div>
         </div>
@@ -39,74 +41,44 @@
 <script>
 export default {
     name: 'Essay',
+    props:{
+        title    :{type:String},
+        type     :{type:String},
+        required :{type:Boolean},
+        isEdit   :{type:Boolean},
+    },
     data () {
         return {
-            essay:
-            {
-                id       :1,        //题目标识
-                title    :'简答',
-                type     :'essay', //题目类型
-                sort     :1,        //题目排序
-                required :false,   //此题是否必填
-                choice:[
-                    {
-                        title: "选项1",
-                        type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
-                    },
-                    {
-                        title: "选项2",
-                        type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
-                    },
-                    {
-                        title: "",
-                        type:"other" 
-                    }
-                ]
-            },
-            answer : [], //记录答案
-            isEdit : false, //是否在编辑状态
+            title2    : this.title,
+            required2 : this.required,
+            isEmpty   :false,
         }
     },
-    computed:{
-
-    },
-    methods:{
-        // 输入框点击选中文字
-        inputSelect (e){
-            (e.target).select()
-        },
-        addChoice (){
-            let len = this.essay.choice.length;
-            let newCho = {
-                type:'normal',
-                title: "选项"+len, 
-            }
-            if(this.essay.choice[len-1].type!='other'){
-                this.essay.choice.push(newCho);
+    watch:{
+        // 更新题目标题
+        title2 (newv,oldv){
+            if(newv.length<=0){
+                this.isEmpty = true;
             }else{
-                this.essay.choice.splice(len-1,0,newCho)
+                 this.isEmpty = false;
             }
+            this.$emit('update:title', newv)
         },
-        removeChoice (e){
-            this.essay.choice.splice(e,1)
+        required2 (newv,oldv){
+            this.$emit('update:required', newv)
         },
-        addOther (){
-            let len = this.essay.choice.length;
-            if(this.essay.choice[len-1].type!='other'){
-                let newCho = {
-                    type:'other',
-                    title: "", 
+        isEdit (newv,oldv){
+            let _self = this;
+            
+            if(newv==false){
+                if(_self.isEmpty==true){
+                    _self.$emit('update:isEdit', true)
+                    return false;
                 }
-                this.essay.choice.push(newCho);
             }
-        },
-        changeChoice(index,id){
-            let ans = [];
-            ans.push(index);
-            this.answer = ans;
-            // this.$emit('answerVal', [this.answer, id, index]);
-        },
+        }
     },
+    methods:{},
     mounted() {},
 }
 </script>

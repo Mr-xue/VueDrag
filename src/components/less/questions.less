@@ -3,10 +3,13 @@
     margin:0 auto;
     background:#fcfcfc;
     overflow:hidden;
-    margin-bottom:20px;  
-
     input{
         outline: none;
+    }
+    .title-empty{
+        border:1px solid #d70022 !important;
+        box-shadow:0px 0px 8px rgba(255,37,71,.75);
+        border-radius: 2px;
     }
     .show_question,
     .edit_question{
@@ -22,6 +25,7 @@
             display:flex;
             margin-left:33px;
             margin-bottom:10px;
+            position:relative;
             i{
                 width:32px;
                 height:32px;
@@ -38,6 +42,39 @@
                 display: block;
                 border:none;
                 padding:0 10px;
+            }
+            textarea{
+                flex:1;
+                min-height:32px;
+                line-height: 32px;
+                display: block;
+                border:none;
+                padding:0 10px; 
+            }
+            
+            .empty-msg{
+                position:absolute;
+                top: 42px;
+                right: 6px;
+                width:150px;
+                height: 24px;
+                background: #666;
+                color: #fff;
+                font-size: 12px;
+                border-radius: 3px;
+                line-height:24px;
+                text-align: center;
+                i.triangle{
+                    width: 0;
+                    height: 0;
+                    position: absolute;
+                    top: -5px;
+                    left: 50%;
+                    margin-left: -5px;
+                    border-bottom: 6px solid #666;
+                    border-left: 5px solid transparent;
+                    border-right: 5px solid transparent;
+                }
             }
         }
         /*单选和多选*/
@@ -84,6 +121,11 @@
                         padding:0 10px;
                         border-bottom:1px solid rgba(0,0,0,0);
                     }
+                    .cho-empty{
+                        border:1px solid #d70022 !important;
+                        box-shadow:0px 0px 8px rgba(255,37,71,.75);
+                        border-radius: 2px;
+                    }
                     i.icon-cuo1{
                         width:32px;
                         height:32px;
@@ -127,7 +169,6 @@
                         display:none !important;
                     } 
                 }
-                
             }
             li:hover{
                .is_edit{
@@ -164,36 +205,9 @@
                 font-size:16px;
                 position:relative;
             }
-            i.icon-cuo1:hover{
-                font-size:20px;
-                .remove{
-                    display:block;
-                }
-            }
-            .remove{
-                display:none;
-                width:36px;
-                height:24px;
-                background:#666;
-                color:#fff;
-                line-height: 28px;
-                font-size:12px;
-                border-radius: 3px;
-                position:absolute;
-                top:-24px;left:-3px;
-                .triangle {
-                    width: 0;
-                    height: 0;
-                    position:absolute;
-                    bottom:-4px;
-                    left:50%;
-                    margin-left:-5px;
-                    border-top: 6px solid #666;
-                    border-left: 5px solid transparent;
-                    border-right: 5px solid transparent;
-                }  
-            }
+
         }
+        
         /*简答题*/
         .input-box{
             height:122px;
@@ -281,6 +295,7 @@
             .right{
                 font-size:14px;
                 text-align: right;
+                height:20px;
                 i.iconfont{
                     color:#666;
                     margin-left:20px;
@@ -301,12 +316,59 @@
                     i.icon-fangxingxuanzhongfill{
                         color:#159af1;
                     }
+
                 }
                 .elective:hover{
                     color:#159af1;
                     i.iconfont{
                         color:#159af1;
                     }
+                }
+                i.icon-shanchu{
+                   position:relative; 
+                   .hover-btn{
+                        display:none;
+                        top: -32px;
+                        left: -10px;
+                    }
+                }
+                i.icon-move{
+                    position:relative;
+                    .hover-btn{
+                        display:none;
+                        top: -32px;
+                        left: -10px;
+                    }
+                }
+                i.icon-shanchu:hover,
+                i.icon-move:hover{
+                    font-size:20px;
+                    .hover-btn{
+                        display:block;
+                    }
+                }
+                .hover-btn{
+                    display:none;
+                    width:36px;
+                    height:24px;
+                    background:#666;
+                    color:#fff;
+                    text-align: center;
+                    line-height: 28px;
+                    font-size:12px;
+                    border-radius: 3px;
+                    position:absolute;
+                    .triangle {
+                        width: 0;
+                        height: 0;
+                        position:absolute;
+                        bottom:-4px;
+                        left:50%;
+                        margin-left:-5px;
+                        border-top: 6px solid #666;
+                        border-left: 5px solid transparent;
+                        border-right: 5px solid transparent;
+                    }  
                 }
             }
         }
@@ -339,9 +401,6 @@
         border:2px solid #159af1;
         .question_header:hover{
             border-bottom:1px solid #f0f0f0;
-        }
-        .input-box{
-            border:1px solid #f0f0f0;
         }
         ul.choice{
             .cho:hover{

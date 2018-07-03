@@ -1,17 +1,18 @@
 <template>
   <div id="drag">
-    <h2>Vue Drag</h2>
+    <h2 @click="changeEdit">Vue Drag</h2>
     <!-- 左侧预览区域 start-->
     <div id="drag-left">
-       <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
+       <!-- <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0"> -->
       <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
-          <div class="list-group-item"  v-for="(item,index) in list2" :key="index">
+          <div class="list-group-item"  v-for="(item,index) in list" :key="index"  @click="changeEdit(index)">
           <code>
             <!-- {{item}} -->
           </code>
-            <Single v-if="item.type=='single'" v-bind.sync="item"></Single>
-            <Multiple v-else-if="item.type=='multiple'" :question-data="item"></Multiple>
+            <Choice v-if="item.type=='multiple' || item.type=='single'" :question-data="item" v-bind.sync="item"></Choice>
+            <Essay v-else-if="item.type=='essay'" :question-data="item" v-bind.sync="item"></Essay>
+            <Username v-else-if="item.type=='username' || item.type=='email' || item.type=='mobile'" :question-data="item" v-bind.sync="item"></Username>
             <!-- <single-item v-if="item.type=='single'"></single-item>
             <multiple-item v-else-if="item.type=='multiple'"></multiple-item> -->
           </div>
@@ -44,8 +45,9 @@ export default {
     // TypeWrap             : ()=> import('./TypeWrap.vue'),
     // singleItem           : ()=> import('./single.vue'),
     // multipleItem         : ()=> import('./multiple.vue'),
-    Single : ()=> import('./Questions/Single.vue'),
-    Multiple       : ()=> import('./Questions/Multiple.vue')
+    Choice : ()=> import('./Questions/Choice.vue'), //单选和多选 
+    Essay  : ()=> import('./Questions/Essay.vue'), //简答 
+    Username  : ()=> import('./Questions/Username.vue'), //姓名 
   },
   data () {
     return {
@@ -74,7 +76,7 @@ export default {
           title    :'单选',
           type     :'single', //题目类型
           required :false,   //此题是否必填
-          isEdit   :true,    //默认编辑状态
+          isEdit   :false,    //默认编辑状态
           choice:[
               {
                 title: "单选题AAAAAAA",
@@ -90,7 +92,7 @@ export default {
           title    :'多选',
           type     :'multiple', //题目类型
           required :false,   //此题是否必填
-          isEdit   :true,
+          isEdit   :false,
           choice:[
               {
                 title: "多选题BBBBBBB",
@@ -100,6 +102,34 @@ export default {
                 type:"other" 
               }
           ]
+        },
+        // 简答
+        {
+          title    :'问答',
+          type     :'essay',  //题目类型(姓名：username，手机：phone，邮箱：email)
+          required :false,   //此题是否必填
+          isEdit   :false,
+        },
+        // 姓名
+        {
+          title    :'姓名',
+          type     :'username',  //题目类型(姓名：username，手机：phone，邮箱：email)
+          required :false,   //此题是否必填
+          isEdit   :false,
+        },
+        // 手机
+        {
+          title    :'手机',
+          type     :'mobile',  //题目类型(姓名：username，手机：phone，邮箱：email)
+          required :false,   //此题是否必填
+          isEdit   :false,
+        },
+        // 邮箱
+        {
+          title    :'邮箱',
+          type     :'email',  //题目类型(姓名：username，手机：phone，邮箱：email)
+          required :false,   //此题是否必填
+          isEdit   :false,
         },
        /* {
           "name": "单选",
@@ -125,6 +155,16 @@ export default {
       // console.log(relatedElement);
       // console.log(draggedElement);
       return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
+    },
+    changeEdit (t){
+        let _self = this;
+        _self.list.map(function(item,index){
+            if(index == t){
+                _self.list[index].isEdit = true;
+            }else{
+                _self.list[index].isEdit = false;
+            }
+        })
     }
   },
   watch: {
