@@ -28,7 +28,7 @@
             <div class="question_header">
                 <i v-if="required2">*</i>
                 <!-- <textarea placeholder="请输入单选题目" :class="isEmpty ? 'title input-title title-empty':'title input-title'" v-model="title2"></textarea> -->
-                <input type="text" placeholder="请输入单选题目" :class="isEmpty ? 'title input-title title-empty':'title input-title'" v-model="title2">
+                <input type="text" placeholder="请输入题目" :class="isEmpty ? 'title input-title title-empty':'title input-title'" v-model="title2">
                 <div class="empty-msg" v-if="isEmpty">请输入题目<i class="triangle"></i></div>
             </div>
             <ul class="choice">
@@ -106,9 +106,9 @@ export default {
             required2  :this.required,
             isEmpty    :false,
             dragOptions:{
-                animation:150,
-                group:'question',
-                handle:'.drag-icon',
+                animation :150,
+                group     :'question',
+                handle    :'.drag-icon',
             }
         }
     },

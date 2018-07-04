@@ -13,6 +13,8 @@
             <Choice v-if="item.type=='multiple' || item.type=='single'" :question-data="item" v-bind.sync="item"></Choice>
             <Essay v-else-if="item.type=='essay'" :question-data="item" v-bind.sync="item"></Essay>
             <Username v-else-if="item.type=='username' || item.type=='email' || item.type=='mobile'" :question-data="item" v-bind.sync="item"></Username>
+            <Sex v-else-if="item.type=='sex'" :question-data="item" v-bind.sync="item"></Sex>
+            <Star v-else-if="item.type=='star'" :question-data="item" v-bind.sync="item"></Star>
             <!-- <single-item v-if="item.type=='single'"></single-item>
             <multiple-item v-else-if="item.type=='multiple'"></multiple-item> -->
           </div>
@@ -45,9 +47,11 @@ export default {
     // TypeWrap             : ()=> import('./TypeWrap.vue'),
     // singleItem           : ()=> import('./single.vue'),
     // multipleItem         : ()=> import('./multiple.vue'),
-    Choice : ()=> import('./Questions/Choice.vue'), //单选和多选 
-    Essay  : ()=> import('./Questions/Essay.vue'), //简答 
-    Username  : ()=> import('./Questions/Username.vue'), //姓名 
+    Choice   : ()=> import('./Questions/Choice.vue'),    //单选和多选 
+    Essay    : ()=> import('./Questions/Essay.vue'),     //简答 
+    Username : ()=> import('./Questions/Username.vue'),  //姓名 
+    Sex      : ()=> import('./Questions/Sex.vue'),       //性别 
+    Star     : ()=> import('./Questions/Star.vue'),      //评分 
   },
   data () {
     return {
@@ -128,6 +132,20 @@ export default {
         {
           title    :'邮箱',
           type     :'email',  //题目类型(姓名：username，手机：phone，邮箱：email)
+          required :false,   //此题是否必填
+          isEdit   :false,
+        },
+        // 性别
+        {
+          title    :'性别',
+          type     :'sex',  //题目类型(姓名：username，手机：phone，邮箱：email)
+          required :false,   //此题是否必填
+          isEdit   :false,
+        },
+        // 评分
+        {
+          title    :'评分',
+          type     :'star',  //题目类型(姓名：username，手机：phone，邮箱：email)
           required :false,   //此题是否必填
           isEdit   :false,
         },
