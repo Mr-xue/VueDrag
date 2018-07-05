@@ -15,10 +15,9 @@
         <div class="edit_question" v-else>
             <div class="question_header">
                 <i v-if="required">*</i>
-                <input type="text" placeholder="请输入简答题目" :class="isEmpty ? 'title input-title title-empty':'title input-title'"  v-model="title2">
-                <div class="empty-msg" v-if="isEmpty">请输入题目<i class="triangle"></i></div>
+                <EditTitle  v-model='title2' type='title'></EditTitle>
             </div>
-           <div class="input-box"></div>
+            <div class="input-box"></div>
             <div class="bottom">
                 <div class="right">
                    <div class="elective" @click="required2 = !required2">
@@ -41,6 +40,10 @@
 <script>
 export default {
     name: 'Essay',
+    components: {
+        EditTitle : ()=> import('./EditTitle.vue'), //标题，选项输入框 
+
+    },
     props:{
         title    :{type:String},
         type     :{type:String},
@@ -67,9 +70,9 @@ export default {
         required2 (newv,oldv){
             this.$emit('update:required', newv)
         },
+        //编辑状态结束时，题目是否为空
         isEdit (newv,oldv){
             let _self = this;
-            
             if(newv==false){
                 if(_self.isEmpty==true){
                     _self.$emit('update:isEdit', true)

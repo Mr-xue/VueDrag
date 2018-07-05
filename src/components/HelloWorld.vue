@@ -6,7 +6,7 @@
        <!-- <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0"> -->
       <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
-          <div class="list-group-item"  v-for="(item,index) in list" :key="index"  @click="changeEdit(index)">
+          <div class="list-group-item"  v-for="(item,index) in list2" :key="index"  @click="changeEdit(index)">
           <code>
             <!-- {{item}} -->
           </code>
@@ -22,7 +22,6 @@
       </draggable>
     </div>
     <!-- 左侧预览区域 end-->
-    
     <!-- 右侧浮窗 start-->
     <draggable id="drag-right" element="div" v-model="list" :options="rightOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false"> 
         <transition-group name="no" class="list-group" tag="ul">
@@ -107,6 +106,53 @@ export default {
               }
           ]
         },
+       /* {
+          "name": "单选",
+          "type": "single",
+          "order": 1,
+          "fixed": false
+        },
+        {
+          "name": "多选",
+          "type": "multiple",
+          "order": 2,
+          "fixed": false
+        },*/
+      ],
+      // 左侧题目显示
+      list2:[
+          //单选
+        {
+          title    :'单选',
+          type     :'single', //题目类型
+          required :false,   //此题是否必填
+          isEdit   :false,    //默认编辑状态
+          choice:[
+              {
+                title: "单选题AAAAAAA",
+                type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
+              },
+              {
+                type:"other" 
+              }
+          ]
+        },
+        // 多选
+        {
+          title    :'多选',
+          type     :'multiple', //题目类型
+          required :false,   //此题是否必填
+          isEdit   :false,
+          choice:[
+              {
+                title: "多选题BBBBBBB",
+                type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
+              },
+              {
+                type:"other" 
+              }
+          ]
+        },
         // 简答
         {
           title    :'问答',
@@ -149,21 +195,7 @@ export default {
           required :false,   //此题是否必填
           isEdit   :false,
         },
-       /* {
-          "name": "单选",
-          "type": "single",
-          "order": 1,
-          "fixed": false
-        },
-        {
-          "name": "多选",
-          "type": "multiple",
-          "order": 2,
-          "fixed": false
-        },*/
-      ],
-      // 左侧题目显示
-      list2:[]
+      ]
     }
   },
   methods:{
@@ -176,11 +208,11 @@ export default {
     },
     changeEdit (t){
         let _self = this;
-        _self.list.map(function(item,index){
+        _self.list2.map(function(item,index){
             if(index == t){
-                _self.list[index].isEdit = true;
+                _self.list2[index].isEdit = true;
             }else{
-                _self.list[index].isEdit = false;
+                _self.list2[index].isEdit = false;
             }
         })
     }

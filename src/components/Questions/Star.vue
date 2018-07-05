@@ -29,8 +29,9 @@
     <div class="edit_question" v-else>
         <div class="question_header">
             <i v-if="required">*</i>
-            <input type="text" placeholder="请输入单选题目" :class="isEmpty ? 'title input-title title-empty':'title input-title'" v-model="title2">
-            <div class="empty-msg" v-if="isEmpty">请输入题目<i class="triangle"></i></div>
+            <EditTitle  v-model='title2' type='title'></EditTitle>
+            <!-- <input type="text" placeholder="请输入单选题目" :class="isEmpty ? 'title input-title title-empty':'title input-title'" v-model="title2">
+            <div class="empty-msg" v-if="isEmpty">请输入题目<i class="triangle"></i></div> -->
         </div>
         <div class="star-box">
             <div class="single-star">
@@ -73,6 +74,9 @@ export default {
         type     :{type:String},
         required :{type:Boolean},
         isEdit   :{type:Boolean},
+    },
+    components: {
+        EditTitle : ()=> import('./EditTitle.vue'), //标题，选项输入框 
     },
     data() {
         return {

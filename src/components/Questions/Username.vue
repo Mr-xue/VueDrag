@@ -20,8 +20,7 @@
         <div class="edit_question" v-else>
             <div class="question_header">
                 <i v-if="required">*</i>
-                <input type="text" placeholder="请输入简答题目" :class="isEmpty ? 'title input-title title-empty':'title input-title'"  v-model="title2">
-                <div class="empty-msg" v-if="isEmpty">请输入题目<i class="triangle"></i></div>
+                <EditTitle  v-model='title2' type='title'></EditTitle>
             </div>
             <div class="user-name-box">
                 <i class="iconfont icon-icon-person" v-if="type=='username'"></i>
@@ -59,6 +58,9 @@ export default {
             title2    : this.title,
             isEmpty   : false,
         }
+    },
+    components: {
+        EditTitle : ()=> import('./EditTitle.vue'), //标题，选项输入框 
     },
     watch:{
         // 更新题目标题

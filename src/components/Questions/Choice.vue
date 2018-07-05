@@ -27,43 +27,45 @@
         <div class="edit_question" v-else>
             <div class="question_header">
                 <i v-if="required2">*</i>
-                <!-- <textarea placeholder="请输入单选题目" :class="isEmpty ? 'title input-title title-empty':'title input-title'" v-model="title2"></textarea> -->
-                <input type="text" placeholder="请输入题目" :class="isEmpty ? 'title input-title title-empty':'title input-title'" v-model="title2">
-                <div class="empty-msg" v-if="isEmpty">请输入题目<i class="triangle"></i></div>
+                <EditTitle  v-model='title2' type='title'></EditTitle>
             </div>
-            <ul class="choice">
-                <draggable
-                v-model="choices" 
-                :options="dragOptions" 
-                @start="drag=true" 
-                @end="drag=false">
-                    <li v-for="(item,index) in choices">
-                        <div v-if="item.type=='normal'" class="normal" >
-                            <i class="iconfont icon-move is_edit drag-icon"></i>
-                            <i class="iconfont icon-yuanquanweixuanfuben" v-if="type=='single'"></i>
-                            <i class="iconfont icon-fangxingweixuanzhong" v-else-if="type=='multiple'"></i>
-                            <input type="text" placeholder="请输入选项" :class="item.isEmpty==1 ? 'cho cho-empty' :'cho'" v-model="item.title" @focus="item.isEmpty=0">
-                            <i class="iconfont icon-cuo1 is_edit" 
-                            @click="removeChoice(index)" >
-                                <div class="remove">移除<i class="triangle"></i></div>
-                            </i>
+            <draggable
+            class="choice"
+            v-model="choices" 
+            :options="dragOptions" 
+            @start="drag=true" 
+            @end="drag=false"
+            element="ul">
+                <li v-for="(item,index) in choices">
+                    <div v-if="item.type=='normal'" class="normal" >
+                        <!-- 拖动 -->
+                        <i class="iconfont icon-move is_edit drag-icon"></i>
+                        <!-- 单选多选 -->
+                        <i class="iconfont icon-yuanquanweixuanfuben" v-if="type=='single'"></i>
+                        <i class="iconfont icon-fangxingweixuanzhong" v-else-if="type=='multiple'"></i>
+                        <div class="cho">
+                            <EditTitle  v-model='item.title' type='choice' ref="child"></EditTitle>
                         </div>
-                        <div class="other" v-else-if="item.type=='other'">
-                            <i class="iconfont icon-fangxingweixuanzhong"></i>
-                            <span>其他</span>
-                            <!-- <input type="text" class="other_input" > -->
-                            <div class="other_input"></div>
-                            <i class="iconfont icon-cuo1 is_edit" 
-                            @click="removeChoice(index)" >
-                                <div class="remove">移除<i class="triangle"></i></div>
-                            </i>
-                        </div>
-                    </li>
-                </draggable>
-            </ul>
+                        <!-- 移除 -->
+                        <i class="iconfont icon-cuo1 is_edit" 
+                        @click="removeChoice(index)">
+                            <div class="remove">移除<i class="triangle"></i></div>
+                        </i>
+                    </div>
+                    <div class="other" v-else-if="item.type=='other'">
+                        <i class="iconfont icon-fangxingweixuanzhong"></i>
+                        <span>其他</span>
+                        <div class="other_input"></div>
+                        <i class="iconfont icon-cuo1 is_edit" 
+                        @click="removeChoice(index)" >
+                            <div class="remove">移除<i class="triangle"></i></div>
+                        </i>
+                    </div>
+                </li>
+            </draggable>
             <div class="bottom">
                 <div class="left">
-                    <span class="addCho" @click="addChoice()">添加选项</span>
+                    <span class="addCho" @click="addChoice($event)">添加选项</span>
                     <span :class="choice[choice.length-1].type=='other'? 'addOther active':'addOther'" @click="addOther">添加其他</span>
                 </div>
                 <div class="right">
@@ -75,7 +77,6 @@
                    <i class="iconfont icon-shanchu">
                        <div class="remove hover-btn">移除<i class="triangle"></i></div>
                    </i>
-                   <!-- <i class="iconfont icon-msnui-copy-file"></i> -->
                    <i class="iconfont icon-move">
                        <div class="remove hover-btn">排序<i class="triangle"></i></div>
                    </i>
@@ -91,6 +92,8 @@ export default {
     name: 'Multiple',
     components: {
         draggable,
+        EditTitle : ()=> import('./EditTitle.vue'), //标题，选项输入框 
+
     },
     props:{
         title    :{type:String},
@@ -109,7 +112,7 @@ export default {
                 animation :150,
                 group     :'question',
                 handle    :'.drag-icon',
-            }
+            },
         }
     },
     watch:{
@@ -122,6 +125,7 @@ export default {
             }
             this.$emit('update:title', newv)
         },
+        //更新选项
         choices: {
             handler: function (newv,oldv) {
                 this.$emit('update:choice', newv)
@@ -131,9 +135,9 @@ export default {
         required2 (newv,oldv){
             this.$emit('update:required', newv)
         },
+        //编辑状态结束时，选项和题目是否为空
         isEdit (newv,oldv){
             let _self = this;
-
             if(newv==false){
                 if(_self.isEmpty==true){
                     _self.$emit('update:isEdit', true)
@@ -150,7 +154,9 @@ export default {
         }
     },
     methods:{
-        addChoice (){
+        //添加选项
+        addChoice (event){
+            let _this = event.currentTarget;
             let len = this.choice.length;
             let newCho = {
                 type:'normal',
@@ -161,7 +167,20 @@ export default {
             }else{
                 this.choice.splice(len-1,0,newCho)
             }
+            this.$nextTick(()=>{
+                let a = $(_this).parents('.edit_question').find('.choice li:last').prev().find(".input-title");
+                var range = document.createRange();
+                range.selectNodeContents($(a)[0]);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+            })
+            
+
+            
+            // this.$refs.child.selectText(a)
+            //  var range = document.createRange();
         },
+        //删除选项
         removeChoice (e){
             if(this.choices.length<3){
                 alert('请最少保留2个选项');
@@ -170,6 +189,7 @@ export default {
             this.choices.splice(e,1)
             this.$forceUpdate();
         },
+        //添加其他
         addOther (){
             let len = this.choice.length;
             if(this.choice[len-1].type!='other'){
@@ -181,9 +201,9 @@ export default {
             }
         },
     },
-    mounted() { },
+    mounted() { 
+        console.log(this.$refs);
+    },
 }
 </script>
-<style lang="less">
 
-</style>
