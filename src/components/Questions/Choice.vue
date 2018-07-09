@@ -168,7 +168,9 @@ export default {
                 this.choice.splice(len-1,0,newCho)
             }
             this.$nextTick(()=>{
-                let a = $(_this).parents('.edit_question').find('.choice li:last').prev().find(".input-title");
+                let $last = $(_this).parents('.edit_question').find('.choice li:last').prev();
+                let a = $last.find(".input-title");
+                $last.addClass('active').siblings().removeClass('active');
                 var range = document.createRange();
                 range.selectNodeContents($(a)[0]);
                 window.getSelection().removeAllRanges();
@@ -202,7 +204,7 @@ export default {
         },
     },
     mounted() { 
-        console.log(this.$refs);
+        // console.log(this.$refs);
     },
 }
 </script>

@@ -28,6 +28,11 @@
           <li v-for="(item,index) in list" :key="index">
             <i class="iconfont icon-danxuan" v-if="item.type=='single'"></i>
             <i class="iconfont icon-duoxuan" v-else-if="item.type=='multiple'"></i>
+            <i class="iconfont icon-xingxing1" v-else-if="item.type=='grade'"></i>
+            <i class="iconfont icon-icon-person" v-else-if="item.type=='username'"></i>
+            <i class="iconfont icon-ico-sex" v-else-if="item.type=='sex'"></i>
+            <i class="iconfont icon-shouji" v-else-if="item.type=='mobile'"></i>
+            <i class="iconfont icon-youxiang" v-else-if="item.type=='email'"></i>
             <span>{{item.title}}</span>
           </li>
         </transition-group>
@@ -43,9 +48,6 @@ export default {
   name: 'Drag',
   components: {
     draggable,
-    // TypeWrap             : ()=> import('./TypeWrap.vue'),
-    // singleItem           : ()=> import('./single.vue'),
-    // multipleItem         : ()=> import('./multiple.vue'),
     Choice   : ()=> import('./Questions/Choice.vue'),    //单选和多选 
     Essay    : ()=> import('./Questions/Essay.vue'),     //简答 
     Username : ()=> import('./Questions/Username.vue'),  //姓名 
@@ -106,18 +108,32 @@ export default {
               }
           ]
         },
-       /* {
-          "name": "单选",
-          "type": "single",
-          "order": 1,
-          "fixed": false
+        {
+          title    :'评分',
+          type     :'grade',
+          required :false,   
         },
         {
-          "name": "多选",
-          "type": "multiple",
-          "order": 2,
-          "fixed": false
-        },*/
+          title    :'姓名',
+          type     :'username',
+          required :false,
+        },
+        {
+          title    :'性别',
+          type     :'sex',
+          required :false,
+        },
+        {
+          title    :'手机',
+          type     :'mobile',
+          required :false,
+        },
+        {
+          title    :'邮箱',
+          type     :'email',
+          required :false,
+        },
+      
       ],
       // 左侧题目显示
       list2:[
@@ -235,12 +251,15 @@ export default {
 <style lang="less">
 @import './less/questions.less';
 
+/*上线删除 start*/
 *{margin: 0;padding: 0;}
 
 ul {
   list-style-type: none;
   padding: 0;
 }
+/*上线删除 end*/
+
 #drag{
   
   #drag-left{
