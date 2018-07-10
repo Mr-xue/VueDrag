@@ -27,7 +27,7 @@ export default {
         return {
            innerText : this.value,
            isEmpty   : false,
-           aClick    : 1,
+           aClick    : 1, //点击选项是否全部选中
         }
     },
     watch:{
@@ -44,18 +44,18 @@ export default {
         changeText(event){
             let _this = event.currentTarget;
             this.innerText = _this.innerHTML;
-            // console.log(this.innerText);
+            console.log(this.innerText);
             this.$emit('input',this.innerText);
+            this.aClick = 1;
         },
         selectText(event) {
+            if(this.aClick != 1){ return false}
             let _this = event.currentTarget;
             var range = document.createRange();
             range.selectNodeContents(_this);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
-
-            // 点击输入框，修改选项的选中状态
-            $(event.target).parents('.normal').parent('li').addClass('active').siblings().removeClass('active');
+            this.aClick = 2;
         }
     },
     mounted() {},
