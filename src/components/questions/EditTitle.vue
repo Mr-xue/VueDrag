@@ -27,7 +27,7 @@ export default {
         return {
            innerText : this.value,
            isEmpty   : false,
-           aClick    : 1,
+           aClick    : 1,  //点击是否选中选项中文字
         }
     },
     watch:{
@@ -46,8 +46,10 @@ export default {
             this.innerText = _this.innerHTML;
             // console.log(this.innerText);
             this.$emit('input',this.innerText);
+            this.aClick = 1;
         },
         selectText(event) {
+            if(this.aClick != 1){ return false}
             let _this = event.currentTarget;
             var range = document.createRange();
             range.selectNodeContents(_this);
