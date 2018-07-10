@@ -48,11 +48,11 @@ export default {
   name: 'Drag',
   components: {
     draggable,
-    Choice   : ()=> import('./Questions/Choice.vue'),    //单选和多选 
-    Essay    : ()=> import('./Questions/Essay.vue'),     //简答 
-    Username : ()=> import('./Questions/Username.vue'),  //姓名 
-    Sex      : ()=> import('./Questions/Sex.vue'),       //性别 
-    Star     : ()=> import('./Questions/Star.vue'),      //评分 
+    Choice   : ()=> import('./questions/Choice.vue'),    //单选和多选 
+    Essay    : ()=> import('./questions/Essay.vue'),     //简答 
+    Username : ()=> import('./questions/Username.vue'),  //姓名 
+    Sex      : ()=> import('./questions/Sex.vue'),       //性别 
+    Star     : ()=> import('./questions/Star.vue'),      //评分 
   },
   data () {
     return {
