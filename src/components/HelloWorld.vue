@@ -7,9 +7,9 @@
       <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
           <div class="list-group-item"  v-for="(item,index) in list2" :key="index"  @click="changeEdit(index)">
-          <code>
-            <!-- {{item}} -->
-          </code>
+          <!-- <code>
+            {{item}}
+          </code> -->
             <Choice v-if="item.type=='multiple' || item.type=='single'" :question-data="item" v-bind.sync="item"></Choice>
             <Essay v-else-if="item.type=='essay'" :question-data="item" v-bind.sync="item"></Essay>
             <Username v-else-if="item.type=='username' || item.type=='email' || item.type=='mobile'" :question-data="item" v-bind.sync="item"></Username>
