@@ -26,7 +26,7 @@
         <div class="edit_question" v-else>
             <div class="question_header">
                 <i v-if="required">*</i>
-                <EditTitle  v-model='title2' type='title'></EditTitle>
+                <EditTitle  v-model='title2' type='title' edit="no"></EditTitle>
             </div>
             <ul class="choice">
                 <li>

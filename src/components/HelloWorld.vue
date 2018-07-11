@@ -1,29 +1,31 @@
 <template>
   <div id="drag">
     <h2 @click="changeEdit">Vue Drag</h2>
+    <div class="q-top">
+      <!-- <input type="text" class="q-title" v-model="questionTitle"> -->
+      <!-- <input type="text" class="q-desc" v-model="questionDesc"> -->
+      <EditTitle  v-model='questionTitle' class="q-title"></EditTitle>
+      <EditTitle  v-model='questionDesc' class="q-desc"></EditTitle>
+    </div>
+    <!-- 问卷描述 -->
     <!-- 左侧预览区域 start-->
     <div id="drag-left">
-       <!-- <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0"> -->
-      <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
+      <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
+      <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove"  @start="isDragging=true" @end="isDragging=false" @change="listChanged">
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
           <div class="list-group-item"  v-for="(item,index) in list2" :key="index"  @click="changeEdit(index)">
-          <!-- <code>
-            {{item}}
-          </code> -->
-            <Choice v-if="item.type=='multiple' || item.type=='single'" :question-data="item" v-bind.sync="item"></Choice>
-            <Essay v-else-if="item.type=='essay'" :question-data="item" v-bind.sync="item"></Essay>
-            <Username v-else-if="item.type=='username' || item.type=='email' || item.type=='mobile'" :question-data="item" v-bind.sync="item"></Username>
-            <Sex v-else-if="item.type=='sex'" :question-data="item" v-bind.sync="item"></Sex>
-            <Star v-else-if="item.type=='star'" :question-data="item" v-bind.sync="item"></Star>
-            <!-- <single-item v-if="item.type=='single'"></single-item>
-            <multiple-item v-else-if="item.type=='multiple'"></multiple-item> -->
+            <Choice v-if="item.type=='multiple' || item.type=='single'" v-bind.sync="item"></Choice>
+            <Essay v-else-if="item.type=='essay'" v-bind.sync="item"></Essay>
+            <Username v-else-if="item.type=='username' || item.type=='email' || item.type=='mobile'" v-bind.sync="item"></Username>
+            <Sex v-else-if="item.type=='sex'" v-bind.sync="item"></Sex>
+            <Star v-else-if="item.type=='grade'" v-bind.sync="item"></Star>
           </div>
         </transition-group>
       </draggable>
     </div>
     <!-- 左侧预览区域 end-->
     <!-- 右侧浮窗 start-->
-    <draggable id="drag-right" element="div" v-model="list" :options="rightOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false"> 
+    <draggable id="drag-right" element="div" v-model="list" :options="rightOptions" :clone="clone" @start="isDragging=true" @end="isDragging=false"> 
         <transition-group name="no" class="list-group" tag="ul">
           <li v-for="(item,index) in list" :key="index">
             <i class="iconfont icon-danxuan" v-if="item.type=='single'"></i>
@@ -48,17 +50,20 @@ export default {
   name: 'Drag',
   components: {
     draggable,
-    Choice   : ()=> import('./questions/Choice.vue'),    //单选和多选 
-    Essay    : ()=> import('./questions/Essay.vue'),     //简答 
-    Username : ()=> import('./questions/Username.vue'),  //姓名 
-    Sex      : ()=> import('./questions/Sex.vue'),       //性别 
-    Star     : ()=> import('./questions/Star.vue'),      //评分 
+    Choice    : ()=> import('./questions/Choice.vue'),    //单选和多选 
+    Essay     : ()=> import('./questions/Essay.vue'),     //简答 
+    Username  : ()=> import('./questions/Username.vue'),  //姓名 
+    Sex       : ()=> import('./questions/Sex.vue'),       //性别 
+    Star      : ()=> import('./questions/Star.vue'),      //评分 
+    EditTitle : ()=> import('./questions/EditTitle.vue'), //标题，选项输入框 
   },
   data () {
     return {
-      editable:true,  //拖动状态
-      isDragging: false,  
-      delayedDragging:false,
+      editable        :true,  //拖动状态
+      isDragging      : false,  
+      delayedDragging :false,
+      questionTitle   :'调查问卷名称',
+      questionDesc    :'问卷描述',
       // 左、右侧浮窗拖动配置
       rightOptions:{
         animation: 0,
@@ -84,7 +89,7 @@ export default {
           isEdit   :false,    //默认编辑状态
           choice:[
               {
-                title: "单选题AAAAAAA",
+                title: "选项1",
                 type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
               },
               {
@@ -100,7 +105,7 @@ export default {
           isEdit   :false,
           choice:[
               {
-                title: "多选题BBBBBBB",
+                title: "选项1",
                 type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
               },
               {
@@ -111,33 +116,38 @@ export default {
         {
           title    :'评分',
           type     :'grade',
+          isEdit   :false,
           required :false,   
         },
         {
           title    :'姓名',
           type     :'username',
+          isEdit   :false,
           required :false,
         },
         {
           title    :'性别',
           type     :'sex',
+          isEdit   :false,
           required :false,
         },
         {
           title    :'手机',
           type     :'mobile',
+          isEdit   :false,
           required :false,
         },
         {
           title    :'邮箱',
           type     :'email',
+          isEdit   :false,
           required :false,
         },
       
       ],
       // 左侧题目显示
       list2:[
-          //单选
+      //单选
         {
           title    :'单选',
           type     :'single', //题目类型
@@ -145,7 +155,7 @@ export default {
           isEdit   :false,    //默认编辑状态
           choice:[
               {
-                title: "单选题AAAAAAA",
+                title: "选项1",
                 type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
               },
               {
@@ -161,7 +171,7 @@ export default {
           isEdit   :false,
           choice:[
               {
-                title: "多选题BBBBBBB",
+                title: "选项1",
                 type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
               },
               {
@@ -215,22 +225,38 @@ export default {
     }
   },
   methods:{
+    // 深度克隆对象
+    clone (original){
+      var element = {}
+      for (var key in original) {
+        if(original.hasOwnProperty(key)) {
+          element[key] = original[key]
+        }
+      }
+      return element;
+    },
+    // 监听左侧列表数据变化事件
+    listChanged (e){
+    },
     onMove ({relatedContext, draggedContext}) {
       const relatedElement = relatedContext.element;
       const draggedElement = draggedContext.element;
-      // console.log(relatedElement);
-      // console.log(draggedElement);
       return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
     },
+    // 控制组件的编辑状态
     changeEdit (t){
-        let _self = this;
-        _self.list2.map(function(item,index){
-            if(index == t){
-                _self.list2[index].isEdit = true;
-            }else{
-                _self.list2[index].isEdit = false;
-            }
-        })
+      console.log(t);
+      let _self = this;
+      _self.list2.map(function(item,index){
+          if(index == t){
+            _self.list2[index].isEdit = true;
+            console.log(_self.list2[index]);
+            // _self.$set(_self.list2[index], 'isEdit', true)
+          }else{
+            _self.list2[index].isEdit = false;
+            // _self.$set(_self.list2[index], 'isEdit', false)
+          }
+      })
     }
   },
   watch: {
@@ -261,6 +287,38 @@ ul {
 /*上线删除 end*/
 
 #drag{
+  .q-top{
+    padding: 20px 0;
+    width: 700px;
+    margin: 0 auto;
+    .q-title,.q-desc{
+        .input-title{
+            color:#222;
+            font-weight: bold;
+            text-align: center;
+            box-sizing: border-box;
+            &:hover{
+              border-bottom:1px solid #f0f0f0;
+            }
+        }
+    }
+    .q-title{
+      .input-title{
+        height: 38px;
+        line-height: 37px;
+        font-size: 20px;
+      }
+    }
+    .q-desc{
+        margin-top: 5px;
+        .input-title{
+            height: 25px;
+            line-height: 24px;
+            font-size: 14px;
+            text-align: center;
+        }
+    }
+  }
   
   #drag-left{
     position: relative;

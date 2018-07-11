@@ -121,7 +121,7 @@ export default {
             if(newv.length<=0){
                 this.isEmpty = true;
             }else{
-                 this.isEmpty = false;
+                this.isEmpty = false;
             }
             this.$emit('update:title', newv)
         },
@@ -167,6 +167,7 @@ export default {
             }else{
                 this.choice.splice(len-1,0,newCho)
             }
+            // 新增选项后标记文字全选状态
             this.$nextTick(()=>{
                 let $last = $(_this).parents('.edit_question').find('.choice li:last').prev();
                 let a = $last.find(".input-title");
@@ -176,8 +177,6 @@ export default {
                 window.getSelection().removeAllRanges();
                 window.getSelection().addRange(range);
             })
-            
-
             
             // this.$refs.child.selectText(a)
             //  var range = document.createRange();
