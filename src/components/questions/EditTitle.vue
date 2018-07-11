@@ -49,7 +49,7 @@ export default {
         changeText(event){
             let _this = event.currentTarget;
             this.innerText = _this.innerHTML;
-            // console.log(this.innerText);
+            console.log(this.innerText);
             this.$emit('input',this.innerText);
             this.aClick = 1;
         },
@@ -61,9 +61,7 @@ export default {
             range.selectNodeContents(_this);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
-
-            // 点击输入框，修改选项的选中状态
-            $(event.target).parents('.normal').parent('li').addClass('active').siblings().removeClass('active');
+            this.aClick = 2;
         }
     },
     mounted() {
