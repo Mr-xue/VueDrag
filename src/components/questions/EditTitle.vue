@@ -36,20 +36,39 @@ export default {
         }
     },
     watch:{
-        innerText (){
-            if (!this.innerText) {
-                // this.innerText = '请输入题目';
+        innerText (newv,oldv){
+          /*  if (!this.innerText) {
                 this.isEmpty   = true;
             }else{
                 this.isEmpty   = false;
+            }*/
+
+          console.log('数据更新'+newv+'---'+oldv);
+          /*  if(newv==''){
+              if(this.type=='qtitle'){
+                this.innerText = '调查问卷名称';
+              }else if(this.type=='qdesc'){
+                this.innerText = '调查问卷描述';
+              }else{
+                this.innerText = '请输入选项信息';
+              }
             }
+            this.$emit('input',this.innerText);*/
         }
     },
-    methods  :{ 
+    methods:{ 
         changeText(event){
             let _this = event.currentTarget;
             this.innerText = _this.innerHTML;
-            console.log(this.innerText);
+            if(_this.innerHTML==''){
+              if(this.type=='qtitle'){
+                this.innerText = '调查问卷名称';
+              }else if(this.type=='qdesc'){
+                this.innerText = '调查问卷描述';
+              }else{
+                this.innerText = '请输入选项信息';
+              }
+            }
             this.$emit('input',this.innerText);
             this.aClick = 1;
         },
@@ -88,7 +107,7 @@ export default {
             white-space : pre-wrap;
             text-align  : left;
             box-sizing:border-box;
-            padding:0 10px;
+            /*padding:0 10px;*/
             &[contenteditable=true]{
                 user-modify: read-write-plaintext-only;
                 -webkit-user-modify: read-write-plaintext-only;

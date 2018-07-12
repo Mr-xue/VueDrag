@@ -44,7 +44,7 @@
                         <i class="iconfont icon-yuanquanweixuanfuben" v-if="type=='single'"></i>
                         <i class="iconfont icon-fangxingweixuanzhong" v-else-if="type=='multiple'"></i>
                         <div class="cho">
-                            <EditTitle  v-model='item.title' type='choice' ref="child"></EditTitle>
+                            <EditTitle  v-model='item.title' type='choice'></EditTitle>
                         </div>
                         <!-- 移除 -->
                         <i class="iconfont icon-cuo1 is_edit" 
@@ -116,8 +116,15 @@ export default {
         }
     },
     watch:{
-        // 更新题目标题
+        // 监听props,上层组件拖动排序后，更新此组件信息
+        title (newv,oldv){
+            this.title2 = newv;
+        },
+        choice (newv,oldv){
+            this.choices = newv;
+        },
         title2 (newv,oldv){
+            console.log(newv);
             if(newv.length<=0){
                 this.isEmpty = true;
             }else{
@@ -125,6 +132,10 @@ export default {
             }
             this.$emit('update:title', newv)
         },
+        required (newv,oldv){
+            this.required2 = newv;
+        },
+
         //更新选项
         choices: {
             handler: function (newv,oldv) {
@@ -177,9 +188,6 @@ export default {
                 window.getSelection().removeAllRanges();
                 window.getSelection().addRange(range);
             })
-            
-            // this.$refs.child.selectText(a)
-            //  var range = document.createRange();
         },
         //删除选项
         removeChoice (e){
@@ -202,8 +210,8 @@ export default {
             }
         },
     },
-    mounted() { 
-        // console.log(this.$refs);
+    mounted() {
+
     },
 }
 </script>

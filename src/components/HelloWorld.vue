@@ -1,17 +1,24 @@
 <template>
   <div id="drag">
-    <h2 @click="changeEdit">Vue Drag</h2>
+    <h2 @click="send">查看提交数据</h2>
     <div class="q-top">
       <!-- <input type="text" class="q-title" v-model="questionTitle"> -->
       <!-- <input type="text" class="q-desc" v-model="questionDesc"> -->
-      <EditTitle  v-model='questionTitle' class="q-title"></EditTitle>
-      <EditTitle  v-model='questionDesc' class="q-desc"></EditTitle>
+      <EditTitle  v-model='questionTitle' class="q-title" type="qtitle"></EditTitle>
+      <EditTitle  v-model='questionDesc' class="q-desc" type="qdesc"></EditTitle>
     </div>
     <!-- 问卷描述 -->
     <!-- 左侧预览区域 start-->
     <div id="drag-left">
       <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
-      <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove"  @start="isDragging=true" @end="isDragging=false" @change="listChanged">
+      <draggable class="drag-left-wrap" 
+        element="div" 
+        v-model="list2" 
+        :options="leftOptions" 
+        :move="onMove"  
+        @start="isDragging=true" 
+        @end="isDragging=false" 
+        @change="listChanged">
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
           <div class="list-group-item"  v-for="(item,index) in list2" :key="index"  @click="changeEdit(index)">
             <Choice v-if="item.type=='multiple' || item.type=='single'" v-bind.sync="item"></Choice>
@@ -24,8 +31,15 @@
       </draggable>
     </div>
     <!-- 左侧预览区域 end-->
+
     <!-- 右侧浮窗 start-->
-    <draggable id="drag-right" element="div" v-model="list" :options="rightOptions" :clone="clone" @start="isDragging=true" @end="isDragging=false"> 
+    <draggable id="drag-right" 
+        element="div" 
+        v-model="list" 
+        :options="rightOptions" 
+        :clone="clone" 
+        @start="isDragging=true" 
+        @end="isDragging=false"> 
         <transition-group name="no" class="list-group" tag="ul">
           <li v-for="(item,index) in list" :key="index">
             <i class="iconfont icon-danxuan" v-if="item.type=='single'"></i>
@@ -63,7 +77,8 @@ export default {
       isDragging      : false,  
       delayedDragging :false,
       questionTitle   :'调查问卷名称',
-      questionDesc    :'问卷描述',
+      questionDesc    :'调查问卷描述',
+      sendData        :{}, //提交数据
       // 左、右侧浮窗拖动配置
       rightOptions:{
         animation: 0,
@@ -143,12 +158,12 @@ export default {
           isEdit   :false,
           required :false,
         },
-      
       ],
       // 左侧题目显示
       list2:[
       //单选
         {
+          sort     :0,
           title    :'单选',
           type     :'single', //题目类型
           required :false,   //此题是否必填
@@ -165,6 +180,7 @@ export default {
         },
         // 多选
         {
+          sort     :1,  
           title    :'多选',
           type     :'multiple', //题目类型
           required :false,   //此题是否必填
@@ -181,6 +197,7 @@ export default {
         },
         // 简答
         {
+          sort     :2,
           title    :'问答',
           type     :'essay',  //题目类型(姓名：username，手机：phone，邮箱：email)
           required :false,   //此题是否必填
@@ -188,6 +205,7 @@ export default {
         },
         // 姓名
         {
+          sort     :3,
           title    :'姓名',
           type     :'username',  //题目类型(姓名：username，手机：phone，邮箱：email)
           required :false,   //此题是否必填
@@ -195,6 +213,7 @@ export default {
         },
         // 手机
         {
+          sort     :4,
           title    :'手机',
           type     :'mobile',  //题目类型(姓名：username，手机：phone，邮箱：email)
           required :false,   //此题是否必填
@@ -202,6 +221,7 @@ export default {
         },
         // 邮箱
         {
+          sort     :5,
           title    :'邮箱',
           type     :'email',  //题目类型(姓名：username，手机：phone，邮箱：email)
           required :false,   //此题是否必填
@@ -209,6 +229,7 @@ export default {
         },
         // 性别
         {
+          sort     :6,
           title    :'性别',
           type     :'sex',  //题目类型(姓名：username，手机：phone，邮箱：email)
           required :false,   //此题是否必填
@@ -216,6 +237,7 @@ export default {
         },
         // 评分
         {
+          sort     :7,
           title    :'评分',
           type     :'star',  //题目类型(姓名：username，手机：phone，邮箱：email)
           required :false,   //此题是否必填
@@ -237,6 +259,11 @@ export default {
     },
     // 监听左侧列表数据变化事件
     listChanged (e){
+        this.list2.map((item,index)=>{
+            item.sort = index;
+            return item;
+        });
+        this.$forceUpdate();
     },
     onMove ({relatedContext, draggedContext}) {
       const relatedElement = relatedContext.element;
@@ -245,18 +272,26 @@ export default {
     },
     // 控制组件的编辑状态
     changeEdit (t){
-      console.log(t);
       let _self = this;
       _self.list2.map(function(item,index){
           if(index == t){
             _self.list2[index].isEdit = true;
-            console.log(_self.list2[index]);
             // _self.$set(_self.list2[index], 'isEdit', true)
           }else{
             _self.list2[index].isEdit = false;
             // _self.$set(_self.list2[index], 'isEdit', false)
           }
       })
+    },
+    // 发送数据
+    send (){
+        let obj = {
+            title :this.questionTitle,
+            desc  :this.questionDesc,
+            list  :this.list2
+        }
+        this.sendData = Object.assign({},this.sendData,obj);
+        console.log(this.sendData);
     }
   },
   watch: {
@@ -268,7 +303,10 @@ export default {
       this.$nextTick( () =>{
            this.delayedDragging =false
       })
-    }
+    },
+  },
+  mounted (){
+  
   }
 }
 </script>
