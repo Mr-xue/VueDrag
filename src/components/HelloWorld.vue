@@ -21,7 +21,7 @@
         @change="listChanged">
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
           <div class="list-group-item"  v-for="(item,index) in list2" :key="index"  @click="changeEdit(index)">
-            <Choice v-if="item.type=='multiple' || item.type=='single'" v-bind.sync="item"></Choice>
+            <Choice v-if="item.type=='multiple' || item.type=='single'" v-bind.sync="item"  @del="delComponent"></Choice>
             <Essay v-else-if="item.type=='essay'" v-bind.sync="item"></Essay>
             <Username v-else-if="item.type=='username' || item.type=='email' || item.type=='mobile'" v-bind.sync="item"></Username>
             <Sex v-else-if="item.type=='sex'" v-bind.sync="item"></Sex>
@@ -108,8 +108,9 @@ export default {
                 type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
               },
               {
-                type:"other" 
-              }
+                title: "选项1",
+                type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
+              },
           ]
         },
         // 多选
@@ -124,8 +125,9 @@ export default {
                 type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
               },
               {
-                type:"other" 
-              }
+                title: "选项2",
+                type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
+              },
           ]
         },
         {
@@ -174,7 +176,8 @@ export default {
                 type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
               },
               {
-                type:"other" 
+                title: "选项2",
+                type:"normal",  
               }
           ]
         },
@@ -191,8 +194,9 @@ export default {
                 type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
               },
               {
-                type:"other" 
-              }
+                title: "选项2",
+                type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
+              },
           ]
         },
         // 简答
@@ -247,9 +251,20 @@ export default {
     }
   },
   methods:{
+    // 删除组件
+    delComponent (deIndex){
+        // this.list2 = [];
+        this.list2.map((item,index)=>{
+            item.isEdit ='';
+            // return item;
+            console.log(item.isEdit);
+        })
+        // this.list2.splice(deIndex,1);
+        
+    },
     // 深度克隆对象
     clone (original){
-      var element = {}
+      let element = {}
       for (var key in original) {
         if(original.hasOwnProperty(key)) {
           element[key] = original[key]
@@ -257,13 +272,12 @@ export default {
       }
       return element;
     },
-    // 监听左侧列表数据变化事件
+    // 监听左侧列表数据变化，重置sort字段
     listChanged (e){
         this.list2.map((item,index)=>{
             item.sort = index;
             return item;
         });
-        this.$forceUpdate();
     },
     onMove ({relatedContext, draggedContext}) {
       const relatedElement = relatedContext.element;
@@ -275,12 +289,13 @@ export default {
       let _self = this;
       _self.list2.map(function(item,index){
           if(index == t){
-            _self.list2[index].isEdit = true;
+            item.isEdit = true;
             // _self.$set(_self.list2[index], 'isEdit', true)
           }else{
-            _self.list2[index].isEdit = false;
+            item.isEdit = false;
             // _self.$set(_self.list2[index], 'isEdit', false)
           }
+          return item;
       })
     },
     // 发送数据
@@ -304,6 +319,12 @@ export default {
            this.delayedDragging =false
       })
     },
+    list2 :{
+        handler (newv,oldv){
+            // console.log(newv);
+        },
+        deep:true
+    }
   },
   mounted (){
   

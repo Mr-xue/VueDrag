@@ -74,7 +74,7 @@
                         <i class="iconfont icon-fangxingxuanzhongfill" v-else></i>
                         <span>选填</span>
                     </div>
-                   <i class="iconfont icon-shanchu">
+                   <i class="iconfont icon-shanchu" @click="del">
                        <div class="remove hover-btn">移除<i class="triangle"></i></div>
                    </i>
                    <i class="iconfont icon-move">
@@ -101,6 +101,7 @@ export default {
         required :{type:Boolean},
         isEdit   :{type:Boolean},
         choice   :{type:Array},
+        sort     :{type:[Number,String]},
     },
     data () {
         return {
@@ -124,7 +125,6 @@ export default {
             this.choices = newv;
         },
         title2 (newv,oldv){
-            console.log(newv);
             if(newv.length<=0){
                 this.isEmpty = true;
             }else{
@@ -135,7 +135,6 @@ export default {
         required (newv,oldv){
             this.required2 = newv;
         },
-
         //更新选项
         choices: {
             handler: function (newv,oldv) {
@@ -148,6 +147,7 @@ export default {
         },
         //编辑状态结束时，选项和题目是否为空
         isEdit (newv,oldv){
+            console.log('哈-'+newv);
             let _self = this;
             if(newv==false){
                 if(_self.isEmpty==true){
@@ -165,6 +165,10 @@ export default {
         }
     },
     methods:{
+        // 删除当前组件
+        del (){
+            this.$emit('del',this.sort)
+        },
         //添加选项
         addChoice (event){
             let _this = event.currentTarget;
@@ -192,7 +196,10 @@ export default {
         //删除选项
         removeChoice (e){
             if(this.choices.length<3){
-                alert('请最少保留2个选项');
+                this.$message({
+                  message: '请最少保留2个选项',
+                  type: 'warning'
+                });
                 return false;
             }
             this.choices.splice(e,1)
