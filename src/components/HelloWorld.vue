@@ -44,6 +44,7 @@
           <li v-for="(item,index) in list" :key="index">
             <i class="iconfont icon-danxuan" v-if="item.type=='single'"></i>
             <i class="iconfont icon-duoxuan" v-else-if="item.type=='multiple'"></i>
+            <i class="iconfont icon-wenda" v-else-if="item.type=='essay'"></i>
             <i class="iconfont icon-xingxing1" v-else-if="item.type=='grade'"></i>
             <i class="iconfont icon-icon-person" v-else-if="item.type=='username'"></i>
             <i class="iconfont icon-ico-sex" v-else-if="item.type=='sex'"></i>
@@ -83,7 +84,6 @@ export default {
       rightOptions:{
         animation: 0,
         group: {name:'right',pull:'clone',put:false},
-        // disabled: !this.editable,
         ghostClass: 'ghost',
         sort:false,  //禁止排序
       },
@@ -129,6 +129,12 @@ export default {
                 type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
               },
           ]
+        },
+        {
+          title    :'问答',
+          type     :'essay',
+          isEdit   :false,
+          required :false,
         },
         {
           title    :'评分',
@@ -253,24 +259,39 @@ export default {
   methods:{
     // 删除组件
     delComponent (deIndex){
-        // this.list2 = [];
-        this.list2.map((item,index)=>{
-            item.isEdit ='';
-            // return item;
-            console.log(item.isEdit);
-        })
+      console.log(this.list2[deIndex].isEdit)
+      this.list2[deIndex].isEdit = false;
+      this.$set(this.list2,deIndex,this.list2[deIndex])
+      console.log(this.list2[deIndex].isEdit)
         // this.list2.splice(deIndex,1);
-        
+        /*this.list2.map((item,index)=>{
+            item.isEdit = false;
+            return item;
+            console.log(item.isEdit);
+        })*/
+    },
+    deepClone (obj){
+      let newObj = obj instanceof Array ? [] : {};
+      for(let i in obj){
+        newObj[i] = typeof obj[i] == 'object' ? this.deepClone(obj[i]) : obj[i]; 
+      }
+      return newObj;
     },
     // 深度克隆对象
     clone (original){
-      let element = {}
+      /*let element = {}
       for (var key in original) {
         if(original.hasOwnProperty(key)) {
-          element[key] = original[key]
+          if(typeof(original[key]) == 'object'){
+
+          }else{
+            element[key] = original[key]
+          }
         }
       }
-      return element;
+      return element;*/
+      let deepObj = this.deepClone(original);
+      return deepObj;
     },
     // 监听左侧列表数据变化，重置sort字段
     listChanged (e){
@@ -301,9 +322,9 @@ export default {
     // 发送数据
     send (){
         let obj = {
-            title :this.questionTitle,
-            desc  :this.questionDesc,
-            list  :this.list2
+          title :this.questionTitle,
+          desc  :this.questionDesc,
+          list  :this.list2
         }
         this.sendData = Object.assign({},this.sendData,obj);
         console.log(this.sendData);
@@ -319,12 +340,6 @@ export default {
            this.delayedDragging =false
       })
     },
-    list2 :{
-        handler (newv,oldv){
-            // console.log(newv);
-        },
-        deep:true
-    }
   },
   mounted (){
   

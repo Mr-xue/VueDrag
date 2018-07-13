@@ -109,6 +109,7 @@ export default {
             choices    :this.choice,
             required2  :this.required,
             isEmpty    :false,
+            editStatue :this.isEdit,
             dragOptions:{
                 animation :150,
                 group     :'question',
@@ -146,8 +147,7 @@ export default {
             this.$emit('update:required', newv)
         },
         //编辑状态结束时，选项和题目是否为空
-        isEdit (newv,oldv){
-            console.log('哈-'+newv);
+        editStatue (newv,oldv){
             let _self = this;
             if(newv==false){
                 if(_self.isEmpty==true){
@@ -167,6 +167,7 @@ export default {
     methods:{
         // 删除当前组件
         del (){
+            // this.editStatus = false;
             this.$emit('del',this.sort)
         },
         //添加选项
