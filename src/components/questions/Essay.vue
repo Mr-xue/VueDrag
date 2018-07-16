@@ -25,12 +25,12 @@
                         <i class="iconfont icon-fangxingxuanzhongfill" v-else></i>
                         <span>选填</span>
                     </div>
-                   <i class="iconfont icon-shanchu">
+                    <i class="iconfont icon-shanchu" @click.stop="del">
                        <div class="remove hover-btn">移除<i class="triangle"></i></div>
-                   </i>
-                   <i class="iconfont icon-move">
+                    </i>
+                    <i class="iconfont icon-move">
                        <div class="remove hover-btn">排序<i class="triangle"></i></div>
-                   </i>
+                    </i>
                 </div>
             </div>
         </div>
@@ -49,12 +49,13 @@ export default {
         type     :{type:String},
         required :{type:Boolean},
         isEdit   :{type:Boolean},
+        sort     :{type:[Number,String]},
     },
     data () {
         return {
             title2    : this.title,
             required2 : this.required,
-            isEmpty   :false,
+            isEmpty   : false,
         }
     },
     watch:{
@@ -81,7 +82,12 @@ export default {
             }
         }
     },
-    methods:{},
+    methods:{
+        // 删除当前组件
+        del (){
+            this.$emit('del',this.sort)
+        },
+    },
     mounted() {},
 }
 </script>

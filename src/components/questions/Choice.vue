@@ -74,12 +74,12 @@
                         <i class="iconfont icon-fangxingxuanzhongfill" v-else></i>
                         <span>选填</span>
                     </div>
-                   <i class="iconfont icon-shanchu" @click="del">
+                    <i class="iconfont icon-shanchu" @click.stop="del">
                        <div class="remove hover-btn">移除<i class="triangle"></i></div>
-                   </i>
-                   <i class="iconfont icon-move">
+                    </i>
+                    <i class="iconfont icon-move">
                        <div class="remove hover-btn">排序<i class="triangle"></i></div>
-                   </i>
+                    </i>
                 </div>
             </div>
         </div>
@@ -99,7 +99,7 @@ export default {
         title    :{type:String},
         type     :{type:String},
         required :{type:Boolean},
-        isEdit   :{type:Boolean},
+        isEdit   :{type:[Boolean,String]},
         choice   :{type:Array},
         sort     :{type:[Number,String]},
     },
@@ -121,6 +121,7 @@ export default {
         // 监听props,上层组件拖动排序后，更新此组件信息
         title (newv,oldv){
             this.title2 = newv;
+            this.$forceUpdate();
         },
         choice (newv,oldv){
             this.choices = newv;
@@ -146,6 +147,9 @@ export default {
         required2 (newv,oldv){
             this.$emit('update:required', newv)
         },
+        isEdit (newv,oldv){
+            this.editStatue = newv;
+        },
         //编辑状态结束时，选项和题目是否为空
         editStatue (newv,oldv){
             let _self = this;
@@ -167,21 +171,21 @@ export default {
     methods:{
         // 删除当前组件
         del (){
-            // this.editStatus = false;
             this.$emit('del',this.sort)
         },
         //添加选项
         addChoice (event){
             let _this = event.currentTarget;
-            let len = this.choice.length;
+            let len = this.choices.length;
+            console.log(this.choices.length);
             let newCho = {
                 type:'normal',
-                title: "选项"+len, 
+                title: "选项"+parseInt(len+1), 
             }
-            if(this.choice[len-1].type!='other'){
-                this.choice.push(newCho);
+            if(this.choices[len-1].type!='other'){
+                this.choices.push(newCho);
             }else{
-                this.choice.splice(len-1,0,newCho)
+                this.choices.splice(len-1,0,newCho)
             }
             // 新增选项后标记文字全选状态
             this.$nextTick(()=>{

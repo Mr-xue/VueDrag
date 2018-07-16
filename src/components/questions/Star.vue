@@ -57,9 +57,12 @@
                     <i class="iconfont icon-fangxingxuanzhongfill" v-else></i>
                     <span>选填</span>
                 </div>
-                <i class="iconfont icon-shanchu"></i>
-                <!-- <i class="iconfont icon-msnui-copy-file"></i> -->
-                <i class="iconfont icon-move"></i>
+                <i class="iconfont icon-shanchu" @click.stop="del">
+                   <div class="remove hover-btn">移除<i class="triangle"></i></div>
+                </i>
+                <i class="iconfont icon-move">
+                   <div class="remove hover-btn">排序<i class="triangle"></i></div>
+                </i>
             </div>
         </div>
     </div>
@@ -74,6 +77,7 @@ export default {
         type     :{type:String},
         required :{type:Boolean},
         isEdit   :{type:Boolean},
+        sort     :{type:[Number,String]},
     },
     components: {
         EditTitle : ()=> import('./EditTitle.vue'), //标题，选项输入框 
@@ -110,6 +114,10 @@ export default {
         }
     },
     methods: {
+        // 删除当前组件
+        del (){
+            this.$emit('del',this.sort)
+        },
         // 输入框点击选中文字
         inputSelect(e) {
           (e.target).select()

@@ -24,7 +24,7 @@ export default {
         },
         // 控制内容是否可以编辑( 值为 no 时不可编辑)
         edit:{
-          type:String,
+          type:[Boolean,String],
           default:'',
         }
     },
@@ -36,6 +36,9 @@ export default {
         }
     },
     watch:{
+        value (newv,oldv){
+          this.innerText = newv;
+        },
         innerText (newv,oldv){
           /*  if (!this.innerText) {
                 this.isEmpty   = true;
@@ -43,7 +46,6 @@ export default {
                 this.isEmpty   = false;
             }*/
 
-          console.log('数据更新'+newv+'---'+oldv);
           /*  if(newv==''){
               if(this.type=='qtitle'){
                 this.innerText = '调查问卷名称';
@@ -80,7 +82,9 @@ export default {
             range.selectNodeContents(_this);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);
-            this.aClick = 2;
+
+            // 点击时标记选中状态
+            $(event.currentTarget).parents('.normal').parent().addClass('active').siblings().removeClass('active');
         }
     },
     mounted() {

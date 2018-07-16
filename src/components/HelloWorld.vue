@@ -22,10 +22,10 @@
         <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
           <div class="list-group-item"  v-for="(item,index) in list2" :key="index"  @click="changeEdit(index)">
             <Choice v-if="item.type=='multiple' || item.type=='single'" v-bind.sync="item"  @del="delComponent"></Choice>
-            <Essay v-else-if="item.type=='essay'" v-bind.sync="item"></Essay>
-            <Username v-else-if="item.type=='username' || item.type=='email' || item.type=='mobile'" v-bind.sync="item"></Username>
-            <Sex v-else-if="item.type=='sex'" v-bind.sync="item"></Sex>
-            <Star v-else-if="item.type=='grade'" v-bind.sync="item"></Star>
+            <Essay v-else-if="item.type=='essay'" v-bind.sync="item" @del="delComponent"></Essay>
+            <Username v-else-if="item.type=='username' || item.type=='email' || item.type=='mobile'" v-bind.sync="item" @del="delComponent"></Username>
+            <Sex v-else-if="item.type=='sex'" v-bind.sync="item" @del="delComponent"></Sex>
+            <Star v-else-if="item.type=='grade'" v-bind.sync="item" @del="delComponent"></Star>
           </div>
         </transition-group>
       </draggable>
@@ -259,17 +259,17 @@ export default {
   methods:{
     // 删除组件
     delComponent (deIndex){
-      console.log(this.list2[deIndex].isEdit)
+      // 删除组件后，取消编辑状态
       this.list2[deIndex].isEdit = false;
-      this.$set(this.list2,deIndex,this.list2[deIndex])
-      console.log(this.list2[deIndex].isEdit)
-        // this.list2.splice(deIndex,1);
-        /*this.list2.map((item,index)=>{
-            item.isEdit = false;
-            return item;
-            console.log(item.isEdit);
-        })*/
+      this.list2.splice(deIndex,1);
+
+      // 对已有数据sort进行重排
+      this.list2.map((item,index)=>{
+          item.sort = index;
+          return item;
+      });
     },
+    // 深克隆方法
     deepClone (obj){
       let newObj = obj instanceof Array ? [] : {};
       for(let i in obj){
@@ -311,10 +311,8 @@ export default {
       _self.list2.map(function(item,index){
           if(index == t){
             item.isEdit = true;
-            // _self.$set(_self.list2[index], 'isEdit', true)
           }else{
             item.isEdit = false;
-            // _self.$set(_self.list2[index], 'isEdit', false)
           }
           return item;
       })
@@ -444,12 +442,12 @@ ul {
       }
     }
   }
-  .flip-list-move {
+  /* .flip-list-move {
     transition: transform 0.5s;
   }
   .no-move {
     transition: transform 0s;
-  } 
+  }  */
   .ghost {
     opacity: .5;
     background: #C8EBFB;
@@ -458,7 +456,7 @@ ul {
     min-height: 20px;
   }
   .list-group-item{
-    transition: all 1s;
+    transition: transform .3s;
   }
 }
 
