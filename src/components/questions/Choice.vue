@@ -178,7 +178,6 @@ export default {
         addChoice (event){
             let _this = event.currentTarget;
             let len = this.choices.length;
-            console.log(this.choices.length);
             let newCho = {
                 type:'normal',
                 title: "选项"+parseInt(len+1), 

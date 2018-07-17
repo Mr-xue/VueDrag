@@ -116,17 +116,17 @@ export default {
         // 多选
         {
           title    :'多选',
-          type     :'multiple', //题目类型
-          required :false,   //此题是否必填
+          type     :'multiple',
+          required :false,
           isEdit   :false,
           choice:[
               {
                 title: "选项1",
-                type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
+                type:"normal",
               },
               {
                 title: "选项2",
-                type:"normal",  //标记选项类型（normal:普通选项、other其他选项）
+                type:"normal",
               },
           ]
         },
@@ -293,7 +293,7 @@ export default {
       let deepObj = this.deepClone(original);
       return deepObj;
     },
-    // 监听左侧列表数据变化，重置sort字段
+    // 监听左侧列表数据变化，重置sort字段(此方法仅能监听到拖动后的数据改变)
     listChanged (e){
         this.list2.map((item,index)=>{
             item.sort = index;
@@ -337,6 +337,12 @@ export default {
       this.$nextTick( () =>{
            this.delayedDragging =false
       })
+    },
+    list2:{
+      handler (newv,oldv){
+        console.log('list2数据更新');
+      },
+      deep:true
     },
   },
   mounted (){

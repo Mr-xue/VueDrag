@@ -37,7 +37,21 @@ export default {
     },
     watch:{
         value (newv,oldv){
-          this.innerText = newv;
+          this.$nextTick(()=>{
+            if(newv==''){
+              if(this.type=='qtitle'){
+                this.innerText = '调查问卷名称';
+              }else if(this.type=='qdesc'){
+                this.innerText = '调查问卷描述';
+              }else{
+                this.innerText = '请输入选项';
+              }
+            }else{
+              this.innerText = newv;
+            }
+          })
+          
+          
         },
         innerText (newv,oldv){
           /*  if (!this.innerText) {
@@ -45,33 +59,13 @@ export default {
             }else{
                 this.isEmpty   = false;
             }*/
-
-          /*  if(newv==''){
-              if(this.type=='qtitle'){
-                this.innerText = '调查问卷名称';
-              }else if(this.type=='qdesc'){
-                this.innerText = '调查问卷描述';
-              }else{
-                this.innerText = '请输入选项信息';
-              }
-            }
-            this.$emit('input',this.innerText);*/
+          this.$emit('input',this.innerText);
         }
     },
     methods:{ 
         changeText(event){
             let _this = event.currentTarget;
             this.innerText = _this.innerHTML;
-            if(_this.innerHTML==''){
-              if(this.type=='qtitle'){
-                this.innerText = '调查问卷名称';
-              }else if(this.type=='qdesc'){
-                this.innerText = '调查问卷描述';
-              }else{
-                this.innerText = '请输入选项信息';
-              }
-            }
-            this.$emit('input',this.innerText);
             this.aClick = 1;
         },
         selectText(event) {
