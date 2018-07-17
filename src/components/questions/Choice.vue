@@ -53,7 +53,8 @@
                         </i>
                     </div>
                     <div class="other" v-else-if="item.type=='other'">
-                        <i class="iconfont icon-fangxingweixuanzhong"></i>
+                        <i class="iconfont icon-yuanquanweixuanfuben" v-if="type=='single'"></i>
+                        <i class="iconfont icon-fangxingweixuanzhong" v-else-if="type=='multiple'"></i>
                         <span>其他</span>
                         <div class="other_input"></div>
                         <i class="iconfont icon-cuo1 is_edit" 
