@@ -14,11 +14,14 @@
         <!-- 左侧预览区域 start-->
         <div id="drag-left">
             <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
-            <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false" @change="listChanged">
+            <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" @start="isDragging=true" @end="isDragging=false" @change="listChanged">
                 <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
-                    <div class="list-group-item" v-for="(item,index) in list2" :key="index" @click="changeEdit(index)">
+                    <div class="list-group-item" v-for="(item,index) in list2" :key="index" @click="editQuestion(index)">
+                        <!-- 单选多选 -->
                         <Choice v-if="item.type=='multiple' || item.type=='single'" v-bind.sync="item" @del="delComponent" @copy="copyComponent"></Choice>
+                        <!-- 简答 -->
                         <Essay v-else-if="item.type=='essay'" v-bind.sync="item" @del="delComponent" @copy="copyComponent"></Essay>
+                        <!-- 下面的你猜 -->
                         <Username v-else-if="item.type=='username' || item.type=='email' || item.type=='mobile'" v-bind.sync="item" @del="delComponent" @copy="copyComponent"></Username>
                         <Sex v-else-if="item.type=='sex'" v-bind.sync="item" @del="delComponent" @copy="copyComponent"></Sex>
                         <Star v-else-if="item.type=='grade'" v-bind.sync="item" @del="delComponent" @copy="copyComponent"></Star>
@@ -89,120 +92,32 @@ export default {
                 sort: true,
                 handle: ".icon-move",
             },
-
-            // 左侧题目显示
-            list2: [
-                //单选
-                {
-                    sort: 0,
-                    title: '单选',
-                    type: 'single', //题目类型
-                    required: true, //此题是否必填
-                    isEdit: false, //默认编辑状态
-                    choice: [{
-                            title: "选项1",
-                            type: "normal", //标记选项类型（normal:普通选项、other其他选项）
-                        },
-                        {
-                            title: "选项2",
-                            type: "normal",
-                        }
-                    ]
-                },
-                // 多选
-                {
-                    sort: 1,
-                    title: '多选',
-                    type: 'multiple', //题目类型
-                    required: true, //此题是否必填
-                    isEdit: false,
-                    choice: [{
-                            title: "选项1",
-                            type: "normal", //标记选项类型（normal:普通选项、other其他选项）
-                        },
-                        {
-                            title: "选项2",
-                            type: "normal", //标记选项类型（normal:普通选项、other其他选项）
-                        },
-                    ]
-                },
-                // 简答
-                {
-                    sort: 2,
-                    title: '问答',
-                    type: 'essay', //题目类型(姓名：username，手机：phone，邮箱：email)
-                    required: true, //此题是否必填
-                    isEdit: false,
-                },
-                // 姓名
-                {
-                    sort: 3,
-                    title: '姓名',
-                    type: 'username', //题目类型(姓名：username，手机：phone，邮箱：email)
-                    required: true, //此题是否必填
-                    isEdit: false,
-                },
-                // 手机
-                {
-                    sort: 4,
-                    title: '手机',
-                    type: 'mobile', //题目类型(姓名：username，手机：phone，邮箱：email)
-                    required: true, //此题是否必填
-                    isEdit: false,
-                },
-                // 邮箱
-                {
-                    sort: 5,
-                    title: '邮箱',
-                    type: 'email', //题目类型(姓名：username，手机：phone，邮箱：email)
-                    required: true, //此题是否必填
-                    isEdit: false,
-                },
-                // 性别
-                {
-                    sort: 6,
-                    title: '性别',
-                    type: 'sex', //题目类型(姓名：username，手机：phone，邮箱：email)
-                    required: true, //此题是否必填
-                    isEdit: false,
-                },
-                // 评分
-                {
-                    sort: 7,
-                    title: '评分',
-                    type: 'star', //题目类型(姓名：username，手机：phone，邮箱：email)
-                    required: true, //此题是否必填
-                    isEdit: false,
-                },
-            ]
         }
     },
     computed: {
         ...mapState(['list']),
+        list2: {
+            get() {
+                return this.$store.state.list2
+            },
+            set(value) {
+                this.$store.commit('updateList2', value)
+            }
+        }
     },
     methods: {
-        /*   ...mapMutations({ xadd:'add'}),
-           ...mapMutations(['reduce']),
-           ...mapActions(['addAction','reduceAction']),
+        /**
+         * 方法说明：
+         *  editQuestion：修改组件的编辑状态
+         *  delComponent：删除组件
          */
+        ...mapMutations(['editQuestion','delComponent','updateSort']),
         // 复制组件
         copyComponent(copyIndex) {
             let copyEle = this.list2.slice(copyIndex, copyIndex + 1);
             let newObj = this.deepClone(copyEle[0]);
             newObj.isEdit = false;
             this.list2.splice(copyIndex + 1, 0, newObj);
-        },
-        // 删除组件
-        delComponent(deIndex) {
-            // 删除组件后，取消编辑状态
-            this.list2[deIndex].isEdit = false;
-            this.list2.splice(deIndex, 1);
-
-            // 对已有数据sort进行重排
-            this.list2.map((item, index) => {
-                item.sort = index;
-                return item;
-            });
         },
         // 深克隆方法
         deepClone(obj) {
@@ -232,27 +147,7 @@ export default {
         },
         // 监听左侧列表数据变化，重置sort字段(此方法仅能监听到拖动后的数据改变)
         listChanged(e) {
-            /*this.list2.map((item,index)=>{
-                item.sort = index;
-                return item;
-            });*/
-        },
-        onMove({ relatedContext, draggedContext }) {
-            const relatedElement = relatedContext.element;
-            const draggedElement = draggedContext.element;
-            return (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
-        },
-        // 控制组件的编辑状态
-        changeEdit(t) {
-            let _self = this;
-            _self.list2.map(function(item, index) {
-                if (index == t) {
-                    item.isEdit = true;
-                } else {
-                    item.isEdit = false;
-                }
-                return item;
-            })
+
         },
         // 发送数据
         send() {
@@ -277,11 +172,8 @@ export default {
         },
         list2: {
             handler(newv, oldv) {
-                console.log('list2数据更新');
-                this.list2.map((item, index) => {
-                    item.sort = index;
-                    return item;
-                });
+                console.log('list2数据更新,数据索引重排');
+                this.updateSort();
             },
             deep: true
         },
@@ -302,6 +194,20 @@ export default {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*上线删除 start*/
 
 * {
@@ -313,6 +219,20 @@ ul {
     list-style-type: none;
     padding: 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
