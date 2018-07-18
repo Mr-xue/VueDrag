@@ -14,7 +14,8 @@
                         <span class="cho" v-html="item.title"></span>
                     </div>
                     <div class="other" v-else-if="item.type=='other'">
-                        <i class="iconfont icon-fangxingweixuanzhong"></i>
+                        <i class="iconfont icon-yuanquanweixuanfuben" v-if="type=='single'"></i>
+                        <i class="iconfont icon-fangxingweixuanzhong" v-else-if="type=='multiple'"></i>
                         <span>其他</span>
                         <input type="text" class="other_input" >
                     </div>
@@ -71,13 +72,20 @@
                 </div>
                 <div class="right">
                    <div class="elective" @click="required2 = !required2">
-                        <i class="iconfont icon-fangxingweixuanzhong" v-if="!required2"></i>
+                        <i class="iconfont icon-fangxingweixuanzhong" v-if="required2"></i>
                         <i class="iconfont icon-fangxingxuanzhongfill" v-else></i>
                         <span>选填</span>
                     </div>
+                   
+                    <!-- 删除按钮 -->
                     <i class="iconfont icon-shanchu" @click.stop="del">
                        <div class="remove hover-btn">移除<i class="triangle"></i></div>
                     </i>
+                    <!-- 复制按钮 -->
+                    <i class="iconfont icon-msnui-copy-file" @click.stop="copy">
+                        <div class="remove hover-btn">复制<i class="triangle"></i></div>
+                    </i>
+                    <!-- 拖动按钮 -->
                     <i class="iconfont icon-move">
                        <div class="remove hover-btn">排序<i class="triangle"></i></div>
                     </i>
@@ -110,7 +118,7 @@ export default {
             choices    :this.choice,
             required2  :this.required,
             isEmpty    :false,
-            editStatue :this.isEdit,
+            // editStatue :this.isEdit,
             dragOptions:{
                 animation :150,
                 group     :'question',
@@ -148,11 +156,8 @@ export default {
         required2 (newv,oldv){
             this.$emit('update:required', newv)
         },
-        isEdit (newv,oldv){
-            this.editStatue = newv;
-        },
         //编辑状态结束时，选项和题目是否为空
-        editStatue (newv,oldv){
+        /*editStatue (newv,oldv){
             let _self = this;
             if(newv==false){
                 if(_self.isEmpty==true){
@@ -167,9 +172,13 @@ export default {
                     }
                 })
             }
-        }
+        }*/
     },
     methods:{
+        // 复制当前组件
+        copy (){
+            this.$emit('copy',this.sort)
+        },
         // 删除当前组件
         del (){
             this.$emit('del',this.sort)
@@ -212,13 +221,13 @@ export default {
         },
         //添加其他
         addOther (){
-            let len = this.choice.length;
-            if(this.choice[len-1].type!='other'){
+            let len = this.choices.length;
+            if(this.choices[len-1].type!='other'){
                 let newCho = {
                     type:'other',
                     title: "", 
                 }
-                this.choice.push(newCho);
+                this.choices.push(newCho);
             }
         },
     },
