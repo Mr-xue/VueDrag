@@ -58,11 +58,11 @@
                     <span>选填</span>
                 </div>
                 <!-- 删除按钮 -->
-                <i class="iconfont icon-shanchu" @click.stop="del">
+                <i class="iconfont icon-shanchu" @click.stop="del(sort)">
                    <div class="remove hover-btn">移除<i class="triangle"></i></div>
                 </i>
                 <!-- 复制按钮 -->
-                <i class="iconfont icon-msnui-copy-file" @click.stop="copy">
+                <i class="iconfont icon-msnui-copy-file" @click.stop="copy(sort)">
                     <div class="remove hover-btn">复制<i class="triangle"></i></div>
                 </i>
                 <!-- 拖动按钮 -->
@@ -76,6 +76,7 @@
   </div>
 </template>
 <script>
+import {mapMutations} from 'vuex'
 export default {
     name: 'Star',
     props:{
@@ -120,14 +121,10 @@ export default {
         }
     },
     methods: {
-        // 复制当前组件
-        copy (){
-            this.$emit('copy',this.sort)
-        },
-        // 删除当前组件
-        del (){
-            this.$emit('del',this.sort)
-        },
+        ...mapMutations({
+            del  :'delComponent',
+            copy :'copyComponent'
+        }),
         // 输入框点击选中文字
         inputSelect(e) {
           (e.target).select()

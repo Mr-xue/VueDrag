@@ -1,11 +1,6 @@
 <template>
     <div class="atitle">
-        <div
-            :class="isEmpty ? 'input-title title-empty':'input-title'"
-            v-html="innerText" 
-            :contenteditable="edit === 'no' ? false : true"
-            @click="selectText($event)"
-            @blur="changeText($event)">
+        <div :class="isEmpty ? 'input-title title-empty':'input-title'" v-html="innerText" :contenteditable="edit === 'no' ? false : true" @click="selectText($event)" @blur="changeText($event)">
         </div>
         <!-- <div :class="type=='title'? 'empty-msg' : 'empty-msg2'" v-if="isEmpty">请输入内容<i class="triangle"></i></div> -->
     </div>
@@ -13,63 +8,58 @@
 <script>
 export default {
     name: 'EditTitle',
-    props:{
+    props: {
         value: {
-          type: String,
-          default: '',
+            type: String,
+            default: '',
         },
         type: {
-          type: String,
-          default: '',
+            type: String,
+            default: '',
         },
         // 控制内容是否可以编辑( 值为 no 时不可编辑)
-        edit:{
-          type:[Boolean,String],
-          default:'',
+        edit: {
+            type: [Boolean, String],
+            default: '',
         }
     },
-    data () {
+    data() {
         return {
-          innerText : this.value,
-          isEmpty   : false,
-          aClick    : 1,  //点击是否选中选项中文字
+            innerText: this.value,
+            isEmpty: false,
+            aClick: 1, //点击是否选中选项中文字
         }
     },
-    watch:{
-        value (newv,oldv){
-          this.$nextTick(()=>{
-            if(newv==''){
-              if(this.type=='qtitle'){
-                this.innerText = '调查问卷名称';
-              }else if(this.type=='qdesc'){
-                this.innerText = '调查问卷描述';
-              }else{
-                this.innerText = '请输入选项';
-              }
-            }else{
-              this.innerText = newv;
-            }
-          })
-          
-          
+    watch: {
+        value(newv, oldv) {
+            this.$nextTick(() => {
+                if (newv == '') {
+                    if (this.type == 'qtitle') {
+                        this.innerText = '调查问卷名称';
+                    } else if (this.type == 'qdesc') {
+                        this.innerText = '调查问卷描述';
+                    } else {
+                        this.innerText = '请输入选项';
+                    }
+                } else {
+                    this.innerText = newv;
+                }
+            })
+
+
         },
-        innerText (newv,oldv){
-          /*  if (!this.innerText) {
-                this.isEmpty   = true;
-            }else{
-                this.isEmpty   = false;
-            }*/
-          this.$emit('input',this.innerText);
+        innerText(newv, oldv) {
+            this.$emit('input', this.innerText);
         }
     },
-    methods:{ 
-        changeText(event){
+    methods: {
+        changeText(event) {
             let _this = event.currentTarget;
             this.innerText = _this.innerHTML;
             this.aClick = 1;
         },
         selectText(event) {
-            if(this.aClick != 1){ return false}
+            if (this.aClick != 1) { return false }
             this.aClick = 0;
             let _this = event.currentTarget;
             var range = document.createRange();
@@ -81,43 +71,42 @@ export default {
             $(event.currentTarget).parents('.normal').parent().addClass('active').siblings().removeClass('active');
         }
     },
-    mounted() {
-    },
+    mounted() {},
 }
+
 </script>
-<style  lang="less">
-    .atitle{
-        width    : 98%;
-        height   : 100%;
-        position : relative;
-        outline  : none;
-        border   : none;
-        white-space:normal;
-        word-break:break-all;
-        .input-title{
-            display     : block;
-            width       : 100%;
-            height      : 100%;
-            overflow    : auto;
-            word-break  : break-all;
-            outline     : none;
-            user-select : text;
-            white-space : pre-wrap;
-            text-align  : left;
-            box-sizing:border-box;
-            /*padding:0 10px;*/
-            &[contenteditable=true]{
-                user-modify: read-write-plaintext-only;
-                -webkit-user-modify: read-write-plaintext-only;
-                &:empty:before {
-                    content: attr(placeholder);
-                    display: block;
-                    color: #ccc;
-                }
+<style lang="less">
+.atitle {
+    width: 98%;
+    height: 100%;
+    position: relative;
+    outline: none;
+    border: none;
+    white-space: normal;
+    word-break: break-all;
+    .input-title {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        word-break: break-all;
+        outline: none;
+        user-select: text;
+        white-space: pre-wrap;
+        text-align: left;
+        box-sizing: border-box;
+        /*padding:0 10px;*/
+        &[contenteditable=true] {
+            user-modify: read-write-plaintext-only;
+            -webkit-user-modify: read-write-plaintext-only;
+            &:empty:before {
+                content: attr(placeholder);
+                display: block;
+                color: #ccc;
             }
-            
         }
-       /*  .title-empty{
+    }
+    /*  .title-empty{
            border:1px solid #FF9966 !important;
            box-shadow:0px 0px 8px rgba(255,153,102,.75);
            border-radius: 2px;
@@ -175,6 +164,6 @@ export default {
                z-index:120;
            }
        } */
-    }
-</style>
+}
 
+</style>

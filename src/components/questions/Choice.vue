@@ -43,19 +43,19 @@
                         <!-- 移除 -->
                         <i class="iconfont icon-cuo1 is_edit" @click="removeChoice(index)">
                             <div class="remove">移除<i class="triangle"></i></div>
+                        </i>
+                    </div>
+                    <div class="other" v-else-if="item.type=='other'">
+                        <i class="iconfont icon-yuanquanweixuanfuben" v-if="type=='single'"></i>
+                        <i class="iconfont icon-fangxingweixuanzhong" v-else-if="type=='multiple'"></i>
+                        <span>其他</span>
+                        <div class="other_input"></div>
+                        <i class="iconfont icon-cuo1 is_edit" @click="removeChoice(index)">
+                                        <div class="remove">移除<i class="triangle"></i></div>
                     </i>
-        </div>
-        <div class="other" v-else-if="item.type=='other'">
-            <i class="iconfont icon-yuanquanweixuanfuben" v-if="type=='single'"></i>
-            <i class="iconfont icon-fangxingweixuanzhong" v-else-if="type=='multiple'"></i>
-            <span>其他</span>
-            <div class="other_input"></div>
-            <i class="iconfont icon-cuo1 is_edit" @click="removeChoice(index)">
-                            <div class="remove">移除<i class="triangle"></i></div>
-        </i>
-    </div>
-    </li>
-    </draggable>
+                </div>
+                </li>
+            </draggable>
     <div class="bottom">
         <div class="left">
             <span class="addCho" @click="addChoice($event)">添加选项</span>
@@ -68,18 +68,18 @@
                 <span>选填</span>
             </div>
             <!-- 删除按钮 -->
-            <i class="iconfont icon-shanchu" @click.stop="del">
-                       <div class="remove hover-btn">移除<i class="triangle"></i></div>
-        </i>
-        <!-- 复制按钮 -->
-        <i class="iconfont icon-msnui-copy-file" @click.stop="copy">
-                        <div class="remove hover-btn">复制<i class="triangle"></i></div>
-    </i>
-    <!-- 拖动按钮 -->
-    <i class="iconfont icon-move">
-                       <div class="remove hover-btn">排序<i class="triangle"></i></div>
-    </i>
-    </div>
+            <i class="iconfont icon-shanchu" @click.stop="del(sort)">
+                <div class="remove hover-btn">移除<i class="triangle"></i></div>
+            </i>
+            <!-- 复制按钮 -->
+            <i class="iconfont icon-msnui-copy-file" @click.stop="copy(sort)">
+                    <div class="remove hover-btn">复制<i class="triangle"></i></div>
+            </i>
+            <!-- 拖动按钮 -->
+            <i class="iconfont icon-move">
+                <div class="remove hover-btn">排序<i class="triangle"></i></div>
+            </i>
+        </div>
     </div>
     </div>
     <!-- 编辑时展示 end-->
@@ -87,13 +87,12 @@
 </template>
 <script>
 import draggable from 'vuedraggable'
+import {mapMutations} from 'vuex'
 export default {
     name: 'Multiple',
     components: {
         draggable,
-        EditTitle: () =>
-            import ('./EditTitle.vue'), //标题，选项输入框 
-
+        EditTitle: () => import ('./EditTitle.vue'), //标题，选项输入框 
     },
     props: {
         title: { type: String },
@@ -121,7 +120,6 @@ export default {
         // 监听props,上层组件拖动排序后，更新此组件信息
         title(newv, oldv) {
             this.title2 = newv;
-            this.$forceUpdate();
         },
         choice(newv, oldv) {
             this.choices = newv;
@@ -166,14 +164,10 @@ export default {
         }*/
     },
     methods: {
-        // 复制当前组件
-        copy() {
-            this.$emit('copy', this.sort)
-        },
-        // 删除当前组件
-        del() {
-            this.$emit('del', this.sort)
-        },
+        ...mapMutations({
+            del  :'delComponent',
+            copy :'copyComponent'
+        }),
         //添加选项
         addChoice(event) {
             let _this = event.currentTarget;
