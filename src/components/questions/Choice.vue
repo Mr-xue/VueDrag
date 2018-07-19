@@ -56,31 +56,31 @@
                 </div>
                 </li>
             </draggable>
-    <div class="bottom">
-        <div class="left">
-            <span class="addCho" @click="addChoice($event)">添加选项</span>
-            <span :class="choice[choice.length-1].type=='other'? 'addOther active':'addOther'" @click="addOther">添加其他</span>
-        </div>
-        <div class="right">
-            <div class="elective" @click="required2 = !required2">
-                <i class="iconfont icon-fangxingweixuanzhong" v-if="required2"></i>
-                <i class="iconfont icon-fangxingxuanzhongfill" v-else></i>
-                <span>选填</span>
+        <div class="bottom">
+            <div class="left">
+                <span class="addCho" @click="addChoice($event)">添加选项</span>
+                <span :class="choice[choice.length-1].type=='other'? 'addOther active':'addOther'" @click="addOther">添加其他</span>
             </div>
-            <!-- 删除按钮 -->
-            <i class="iconfont icon-shanchu" @click.stop="del(sort)">
-                <div class="remove hover-btn">移除<i class="triangle"></i></div>
-            </i>
-            <!-- 复制按钮 -->
-            <i class="iconfont icon-msnui-copy-file" @click.stop="copy(sort)">
-                    <div class="remove hover-btn">复制<i class="triangle"></i></div>
-            </i>
-            <!-- 拖动按钮 -->
-            <i class="iconfont icon-move">
-                <div class="remove hover-btn">排序<i class="triangle"></i></div>
-            </i>
+            <div class="right">
+                <div class="elective" @click="required2 = !required2">
+                    <i class="iconfont icon-fangxingweixuanzhong" v-if="required2"></i>
+                    <i class="iconfont icon-fangxingxuanzhongfill" v-else></i>
+                    <span>选填</span>
+                </div>
+                <!-- 删除按钮 -->
+                <i class="iconfont icon-shanchu" @click.stop="del(sort)">
+                    <div class="remove hover-btn">移除<i class="triangle"></i></div>
+                </i>
+                <!-- 复制按钮 -->
+                <i class="iconfont icon-msnui-copy-file" @click.stop="copy(sort)">
+                        <div class="remove hover-btn">复制<i class="triangle"></i></div>
+                </i>
+                <!-- 拖动按钮 -->
+                <i class="iconfont icon-move">
+                    <div class="remove hover-btn">排序<i class="triangle"></i></div>
+                </i>
+            </div>
         </div>
-    </div>
     </div>
     <!-- 编辑时展示 end-->
     </div>

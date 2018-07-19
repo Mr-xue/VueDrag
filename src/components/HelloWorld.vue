@@ -121,7 +121,8 @@ export default {
             'editQuestion',
             'delComponent',
             'updateSort',
-            'copyComponent'
+            'copyComponent',
+            'addList2'
         ]),
         // 深克隆方法
         deepClone(obj) {
@@ -141,6 +142,12 @@ export default {
         // 监听左侧列表数据变化，重置sort字段(此方法仅能监听到拖动后的数据改变)
         listChanged(e) {
             this.editQuestion(e.newIndex);
+            console.log(e);
+            let addId = {
+                moke:e.added.element,
+                newIndex:e.added.newIndex
+            }
+            this.addList2(addId)
         },
         // 发送数据
         send() {

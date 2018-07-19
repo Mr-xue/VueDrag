@@ -101,6 +101,9 @@ const state = {
 }
 // 修改数据的方法（仅包含同步方法）
 const mutations = {
+	addList2(state,payload){
+		state.list2.splice(payload.newIndex,1,payload.moke)
+	},
 	// 列表数据更新
 	updateList2(state, payload) {
 		state.list2 = payload;
