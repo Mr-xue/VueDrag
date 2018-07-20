@@ -108,11 +108,14 @@ export default {
                 let test = this.$store.state.list2;
                 test.map((item,index)=>{
                     this.langChange(item);
-                    item.choice.map((item,index)=>{
-                        this.langChange(item);
-                    })
+                    if(item.hasOwnProperty('choice')){
+                        item.choice.map((item,index)=>{
+                            this.langChange(item);
+                        })
+                    }
+                    
                 })
-                return this.$store.state.list2
+                return test
             },
             set(value) {
                 this.updateList2(value);
