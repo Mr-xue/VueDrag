@@ -1,12 +1,16 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import VueI18n from 'vue-i18n';
+
+
 Vue.use(Vuex);
+Vue.use(VueI18n);
 
 // 需要集中处理的数据
 const state = {
+	ceshi:'G.sucess',
 	sendState:true,
-	questionTitle:'调查问卷名称',
-	questionDesc:'调查问卷描述',
+	
 	// 右侧浮窗(源数据)
 	list: [
 		//单选
@@ -83,12 +87,12 @@ const state = {
 		//单选
 		{
 			sort: 0,
-			title: '单选',
+			title: '-soketrans-G.noData',
 			type: 'single', //题目类型
 			required: true, //此题是否必填
 			isEdit: false, //默认编辑状态
 			choice: [{
-					title: "选项1",
+					title: "-soketrans-G.ok",
 					type: "normal", //标记选项类型（normal:普通选项、other其他选项）
 				},
 				{
@@ -108,6 +112,7 @@ const mutations = {
 	updateList2(state, payload) {
 		state.list2 = payload;
 		state.sendState = true;
+		// console.log(this);
 	},
 	// 修改组件编辑状态
 	editQuestion(state, editIndex) {

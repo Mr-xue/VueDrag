@@ -95,10 +95,23 @@ export default {
          * list:右侧源数据
          * send：是否进行数据提交
          */
+        ceshi (){
+            let a = this.$store.state.ceshi;
+
+            // return this.$i18n.t(a)
+            return a
+        },
         ...mapState(['list', 'sendState']),
         // 左侧创建数据
         list2: {
             get() {
+                let test = this.$store.state.list2;
+                test.map((item,index)=>{
+                    this.langChange(item);
+                    item.choice.map((item,index)=>{
+                        this.langChange(item);
+                    })
+                })
                 return this.$store.state.list2
             },
             set(value) {
@@ -107,6 +120,13 @@ export default {
         }
     },
     methods: {
+        langChange (item){
+            if(item.title.substr(0,11) == '-soketrans-'){
+                let lang = item.title.substr(11);
+                item.title = this.$i18n.t(lang)
+            }
+            return item;
+        },
         /**
          * mutation方法说明：
          *  updateList2：更新数据方法
@@ -189,7 +209,7 @@ export default {
         },
     },
     mounted() {
-
+        console.log(this.t);
     }
 }
 
