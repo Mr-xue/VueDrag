@@ -116,7 +116,7 @@ const mutations = {
 	},
 	// 修改组件编辑状态
 	editQuestion(state, editIndex) {
-		state.sendState = false;
+		// state.sendState = false;
 		state.list2.map((item, index) => {
 			if (index == editIndex) {
 				item.isEdit = true;
