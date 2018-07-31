@@ -28,7 +28,7 @@
         <!-- 右侧浮窗 start-->
         <draggable id="drag-right" element="div" v-model="list" :options="rightOptions" :clone="clone" @start="isDragging=true" @end="isDragging=false">
             <transition-group name="no" class="list-group" tag="ul">
-                <li v-for="(item,index) in list" :key="index">
+                <li v-for="(item,index) in list" :key="index" @click.stop="clickAdd(item)">
                     <i class="iconfont icon-danxuan" v-if="item.type=='single'"></i>
                     <i class="iconfont icon-duoxuan" v-else-if="item.type=='multiple'"></i>
                     <i class="iconfont icon-wenda" v-else-if="item.type=='essay'"></i>
@@ -49,7 +49,7 @@ import draggable from 'vuedraggable'
 import { mapState, mapMutations } from 'vuex'
 
 export default {
-    name: 'Drag',
+    name: 'HelloWorld',
     components: {
         draggable,
         Choice: () =>
@@ -123,6 +123,33 @@ export default {
         }
     },
     methods: {
+        // 点击增加题目
+        clickAdd (obj){
+            let addIndex = null;
+            let addId = {};
+            let param = JSON.parse(JSON.stringify(obj));
+            this.list2.forEach((param,index)=>{
+                if(param.isEdit){
+                    addIndex = index;
+                }
+            })
+            if(addIndex==null){
+                console.log('往最后追加--'+(this.list2.length-1));
+                addIndex = this.list2.length;
+                addId = {
+                    moke:param,
+                    newIndex:addIndex
+                }
+            }else{
+                addIndex += 1;
+                addId = {
+                    moke:param,
+                    newIndex:addIndex
+                }
+            }
+            this.clickRightAdd(addId);
+            // this.editQuestion(addIndex)
+        },
         langChange (item){
             if(item.title.substr(0,11) == '-soketrans-'){
                 let lang = item.title.substr(11);
@@ -137,6 +164,7 @@ export default {
          *  delComponent：删除组件
          *  updateSort：更新列表排序
          *  copyComponent：复制组件
+         *  clickRightAdd: 点击右侧题型增加题目 
          *  
          */
         ...mapMutations([
@@ -145,7 +173,8 @@ export default {
             'delComponent',
             'updateSort',
             'copyComponent',
-            'addList2'
+            'addList2',
+            'clickRightAdd'
         ]),
         // 深克隆方法
         deepClone(obj) {
@@ -164,13 +193,16 @@ export default {
         },
         // 监听左侧列表数据变化，重置sort字段(此方法仅能监听到拖动后的数据改变)
         listChanged(e) {
-            // this.editQuestion(e.newIndex);
             console.log(e);
-            let addId = {
-                moke:e.added.element,
-                newIndex:e.added.newIndex
+            // this.editQuestion(e.newIndex);
+            if(e.added){
+                let addId = {
+                    moke:e.added.element,
+                    newIndex:e.added.newIndex
+                }
+                this.addList2(addId)
             }
-            this.addList2(addId)
+            
         },
         // 发送数据
         send() {
@@ -182,7 +214,6 @@ export default {
                     list: this.list2
                 }
                 this.sendData = Object.assign({}, this.sendData, obj);
-                console.log('发送数据');
             },500)
         }
     },
@@ -198,7 +229,6 @@ export default {
         },
         list2: {
             handler(newv, oldv) {
-                console.log('list2数据更新');
                 // 每次数据更新发送数据
                 // 题目编辑状态发生改变时，不进行数据更新请求及索引重排
                 if (this.sendState) {

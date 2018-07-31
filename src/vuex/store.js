@@ -105,6 +105,20 @@ const state = {
 }
 // 修改数据的方法（仅包含同步方法）
 const mutations = {
+	// 点击增加
+	clickRightAdd(state,payload){
+		state.list2.splice(payload.newIndex,0,payload.moke)
+		console.log(payload.newIndex);
+		state.list2.map((item, index) => {
+			if (index == payload.newIndex) {
+				item.isEdit = true;
+			} else {
+				console.log('变false');
+				item.isEdit = false;
+			}
+		})
+	},
+	// 拖动增加的处理方法
 	addList2(state,payload){
 		state.list2.splice(payload.newIndex,1,payload.moke)
 	},
