@@ -74,6 +74,9 @@ export default {
         EditTitle : ()=> import('./EditTitle.vue'), //标题，选项输入框 
     },
     watch:{
+        title(newv, oldv) {
+            this.title2 = newv;
+        },
         // 更新题目标题
         title2 (newv,oldv){
             if(newv.length<=0){
