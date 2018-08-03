@@ -282,18 +282,23 @@ ul {
         }
         .q-title {
             .input-title {
-                height: 38px;
-                line-height: 37px;
+                /*height: 38px;*/
+                /*line-height: 37px;*/
+                border-bottom:1px solid transparent;
+                padding: 5px 0;
                 font-size: 20px;
             }
         }
         .q-desc {
             margin-top: 5px;
             .input-title {
-                height: 25px;
-                line-height: 24px;
+                /*height: 25px;*/
+                /*line-height: 24px;*/
+                padding: 5px 0;
                 font-size: 14px;
                 text-align: center;
+                overflow: hidden;
+                border-bottom:1px solid transparent;
             }
         }
     }
