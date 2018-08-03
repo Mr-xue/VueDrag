@@ -10,7 +10,7 @@
         <div id="drag-left">
             <img src="@/assets/guide.jpg" class="guide-img" v-if="list2.length<=0">
             <draggable class="drag-left-wrap" element="div" v-model="list2" :options="leftOptions" @start="isDragging=true" @end="isDragging=false" @change="listChanged">
-                <transition-group type="transition" class="list-group" :name="'flip-list'" tag="div">
+                <transition-group type="transition" :class="['list-group',{'min-list-height':list2.length==0}]" :name="'flip-list'" tag="div">
                     <div class="list-group-item" v-for="(item,index) in list2" :key="index" @click="editQuestion(index)">
                         <!-- 单选多选 -->
                         <Choice v-if="item.type=='multiple' || item.type=='single'" v-bind.sync="item"></Choice>
@@ -250,63 +250,20 @@ export default {
 <style lang="less">
 @import './less/questions.less';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*上线删除 start*/
 
 * {
     margin: 0;
     padding: 0;
 }
-
 ul {
     list-style-type: none;
     padding: 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*上线删除 end*/
 
 #drag {
+    
     .q-top {
         padding: 20px 0;
         width: 700px;
@@ -404,6 +361,9 @@ ul {
     }
     .list-group {
         min-height: 20px;
+    }
+    .min-list-height{
+        min-height: 167px;
     }
     .list-group-item {
         transition: transform .3s;

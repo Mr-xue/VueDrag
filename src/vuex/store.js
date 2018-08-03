@@ -85,7 +85,7 @@ const state = {
 	// 左侧题目显示
 	list2: [
 		//单选
-		{
+		/*{
 			sort: 0,
 			title: '-soketrans-G.noData',
 			type: 'single', //题目类型
@@ -100,7 +100,7 @@ const state = {
 					type: "normal",
 				}
 			]
-		},
+		},*/
 	]
 }
 // 修改数据的方法（仅包含同步方法）
