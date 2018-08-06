@@ -41,7 +41,9 @@ export default {
                     } else if (this.type == 'qdesc') {
                         // this.innerText = '调查问卷描述';
                         this.place = '请输入调查问卷描述';
-                    } else {
+                    } else if(this.type == 'title'){
+                      this.innerText = '请输入标题';
+                    }else{
                         this.innerText = '请输入选项';
                         this.place = '';
                     }
