@@ -71,7 +71,7 @@ export default {
             isDragging: false,
             delayedDragging: false,
             questionTitle: '调查问卷名称',
-            questionDesc: '调查问卷描述',
+            questionDesc: '',
             sendData: {}, //提交数据
             // 左、右侧浮窗拖动配置
             rightOptions: {
@@ -271,6 +271,7 @@ ul {
         .q-title,
         .q-desc {
             .input-title {
+                min-height: 34px;
                 color: #222;
                 font-weight: bold;
                 text-align: center;

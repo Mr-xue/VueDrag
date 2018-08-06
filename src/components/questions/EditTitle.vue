@@ -1,6 +1,6 @@
 <template>
     <div class="atitle">
-        <div :class="isEmpty ? 'input-title title-empty':'input-title'" v-html="innerText" :contenteditable="edit === 'no' ? false : true" @click="selectText($event)" @blur="changeText($event)">
+        <div :class="isEmpty ? 'input-title title-empty':'input-title'" v-html="innerText" :contenteditable="edit === 'no' ? false : true" @click="selectText($event)" @blur="changeText($event)" :placeholder="place">
         </div>
         <!-- <div :class="type=='title'? 'empty-msg' : 'empty-msg2'" v-if="isEmpty">请输入内容<i class="triangle"></i></div> -->
     </div>
@@ -28,6 +28,7 @@ export default {
             innerText: this.value,
             isEmpty: false,
             aClick: 1, //点击是否选中选项中文字
+            place: ''
         }
     },
     watch: {
@@ -36,10 +37,13 @@ export default {
                 if (newv == '') {
                     if (this.type == 'qtitle') {
                         this.innerText = '调查问卷名称';
+                        this.place = '';
                     } else if (this.type == 'qdesc') {
-                        this.innerText = '调查问卷描述';
+                        // this.innerText = '调查问卷描述';
+                        this.place = '请输入调查问卷描述';
                     } else {
                         this.innerText = '请输入选项';
+                        this.place = '';
                     }
                 } else {
                     this.innerText = newv;
@@ -71,7 +75,11 @@ export default {
             $(event.currentTarget).parents('.normal').parent().addClass('active').siblings().removeClass('active');
         }
     },
-    mounted() {},
+    mounted() {
+        if(this.value=='' && this.type == 'qdesc'){
+            this.place = '请输入调查问卷描述';
+        }
+    },
 }
 
 </script>
