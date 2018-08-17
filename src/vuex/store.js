@@ -15,7 +15,7 @@ const state = {
 	list: [
 		//单选
 		{
-			title: '单选',
+			title: '单选 - Sing choose hahhahahah',
 			type: 'single', //题目类型
 			required: true, //此题是否必填
 			isEdit: false, //默认编辑状态

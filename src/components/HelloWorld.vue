@@ -87,7 +87,7 @@ export default {
                 sort: true,
                 handle: ".icon-move",
             },
-            debounce:null, 
+            debounce: null,
         }
     },
     computed: {
@@ -95,7 +95,7 @@ export default {
          * list:右侧源数据
          * send：是否进行数据提交
          */
-        ceshi (){
+        ceshi() {
             let a = this.$store.state.ceshi;
 
             // return this.$i18n.t(a)
@@ -106,14 +106,14 @@ export default {
         list2: {
             get() {
                 let test = this.$store.state.list2;
-                test.map((item,index)=>{
+                test.map((item, index) => {
                     this.langChange(item);
-                    if(item.hasOwnProperty('choice')){
-                        item.choice.map((item,index)=>{
+                    if (item.hasOwnProperty('choice')) {
+                        item.choice.map((item, index) => {
                             this.langChange(item);
                         })
                     }
-                    
+
                 })
                 return test
             },
@@ -124,34 +124,34 @@ export default {
     },
     methods: {
         // 点击增加题目
-        clickAdd (obj){
+        clickAdd(obj) {
             let addIndex = null;
             let addId = {};
             let param = JSON.parse(JSON.stringify(obj));
-            this.list2.forEach((param,index)=>{
-                if(param.isEdit){
+            this.list2.forEach((param, index) => {
+                if (param.isEdit) {
                     addIndex = index;
                 }
             })
-            if(addIndex==null){
-                console.log('往最后追加--'+(this.list2.length-1));
+            if (addIndex == null) {
+                console.log('往最后追加--' + (this.list2.length - 1));
                 addIndex = this.list2.length;
                 addId = {
-                    moke:param,
-                    newIndex:addIndex
+                    moke: param,
+                    newIndex: addIndex
                 }
-            }else{
+            } else {
                 addIndex += 1;
                 addId = {
-                    moke:param,
-                    newIndex:addIndex
+                    moke: param,
+                    newIndex: addIndex
                 }
             }
             this.clickRightAdd(addId);
             // this.editQuestion(addIndex)
         },
-        langChange (item){
-            if(item.title.substr(0,11) == '-soketrans-'){
+        langChange(item) {
+            if (item.title.substr(0, 11) == '-soketrans-') {
                 let lang = item.title.substr(11);
                 item.title = this.$i18n.t(lang)
             }
@@ -195,26 +195,26 @@ export default {
         listChanged(e) {
             console.log(e);
             // this.editQuestion(e.newIndex);
-            if(e.added){
+            if (e.added) {
                 let addId = {
-                    moke:e.added.element,
-                    newIndex:e.added.newIndex
+                    moke: e.added.element,
+                    newIndex: e.added.newIndex
                 }
                 this.addList2(addId)
             }
-            
+
         },
         // 发送数据
         send() {
             clearTimeout(this.debounce);
-            this.debounce = setTimeout(()=>{
+            this.debounce = setTimeout(() => {
                 let obj = {
                     title: this.questionTitle,
                     desc: this.questionDesc,
                     list: this.list2
                 }
                 this.sendData = Object.assign({}, this.sendData, obj);
-            },500)
+            }, 500)
         }
     },
     watch: {
@@ -241,8 +241,7 @@ export default {
             deep: true
         },
     },
-    mounted() {
-    }
+    mounted() {}
 }
 
 </script>
@@ -250,20 +249,24 @@ export default {
 <style lang="less">
 @import './less/questions.less';
 
+
 /*上线删除 start*/
 
 * {
     margin: 0;
     padding: 0;
 }
+
 ul {
     list-style-type: none;
     padding: 0;
 }
+
+
 /*上线删除 end*/
 
 #drag {
-    
+
     .q-top {
         padding: 20px 0;
         width: 700px;
@@ -285,7 +288,7 @@ ul {
             .input-title {
                 /*height: 38px;*/
                 /*line-height: 37px;*/
-                border-bottom:1px solid transparent;
+                border-bottom: 1px solid transparent;
                 padding: 5px 0;
                 font-size: 20px;
             }
@@ -299,7 +302,7 @@ ul {
                 font-size: 14px;
                 text-align: center;
                 overflow: hidden;
-                border-bottom:1px solid transparent;
+                border-bottom: 1px solid transparent;
             }
         }
     }
@@ -343,14 +346,28 @@ ul {
 
         >ul {
             li {
+                display: flex;
+                align-items: baseline;
+
                 width: 100%;
-                height: 50px;
-                line-height: 50px;
+                /*min-height: 50px;*/
+                /*line-height: 50px;*/
+                padding: 12px 0 12px 15px;
                 text-align: center;
                 cursor: pointer;
+                box-sizing: border-box;
                 transition: background-color .3s;
                 &:hover {
                     background-color: #ECF5FF;
+                }
+                span {
+                    display: inline-block;
+                    line-height: 18px;
+                    text-align: left;
+                    padding: 0 10px;
+                    text-align: left;
+                    box-sizing: border-box;
+                    word-break: break-word;
                 }
             }
         }
@@ -368,7 +385,7 @@ ul {
     .list-group {
         min-height: 20px;
     }
-    .min-list-height{
+    .min-list-height {
         min-height: 167px;
     }
     .list-group-item {
