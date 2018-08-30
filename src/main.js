@@ -30,3 +30,5 @@ new Vue({
 	components: { App },
 	template: '<App/>'
 })
+
+console.log(6666);
